@@ -9,7 +9,7 @@ desenvolvidos como trabalho final da disciplina de Programação em R.
 | Nome | GitHub |
 |---|---|
 | Lucas | [@usuario1](https://github.com/usuario1) |
-| Felipe | [@usuario2](https://github.com/usuario2) |
+| Felipe | [@felipinas26](https://github.com/felipinas26) |
 | Miguel Antunes de Lima | [@miguellima1188](https://github.com/miguellima1188)
 
 ## Banco de dados
