@@ -1,0 +1,16 @@
+---
+title: 'Análise Estatística dos Dados Históricos do UFC'
+lang: pt-BR
+format:
+  html:
+    toc: true
+    number-sections: true
+bibliography: referencias.bib
+---
+
+# Introdução {#sec-introducao}
+# Materiais e Métodos {#sec-metodos}
+# Resultados e Discussão {#sec-resultados}
+# Conclusão {#sec-conclusao}
+# Declaração de Uso de IA
+# Referências
