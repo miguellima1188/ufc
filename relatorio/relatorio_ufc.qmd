@@ -1,16 +1,189 @@
 ---
-title: 'Análise Estatística dos Dados Históricos do UFC'
+title: "Análise Estatística dos Dados Históricos do UFC"
+subtitle: "CE302 — Elementos de Programação para Estatística"
+author:
+  - name: "Lucas"
+    affiliation: "Departamento de Estatística, UFPR"
+  - name: "Felipe"
+    affiliation: "Departamento de Estatística, UFPR"
+  - name: "Miguel Antunes de Lima"
+    affiliation: "Departamento de Estatística, UFPR"
+  - name: "Rafael Dias"
+    affiliation: "Departamento de Estatística, UFPR"
+date: today
+date-format: "DD/MM/YYYY"
 lang: pt-BR
 format:
   html:
     toc: true
+    toc-title: "Sumário"
+    toc-depth: 3
+    number-sections: true
+    theme: cosmo
+    code-fold: true
+    code-summary: "Ver código"
+    embed-resources: true
+  pdf:
+    toc: true
+    toc-title: "Sumário"
     number-sections: true
 bibliography: referencias.bib
+csl: https://raw.githubusercontent.com/citation-style-language/styles/master/associacao-brasileira-de-normas-tecnicas.csl
+execute:
+  echo: true
+  warning: false
+  message: false
+  cache: false
 ---
 
+```{r}
+#| label: configurar-codificacao
+#| include: false
+
+if (.Platform$OS.type == "windows" && !l10n_info()[["UTF-8"]]) {
+  Sys.setlocale("LC_CTYPE", ".UTF-8")
+}
+```
+
 # Introdução {#sec-introducao}
+
+No Ultimate Fighting Championship (UFC), uma luta pode terminar antes do último round ou ser decidida pelos juízes. O histórico de confrontos permite comparar a frequência desses desfechos e investigar como as características dos atletas se associam ao resultado das lutas.
+
+O objetivo deste relatório é descrever a evolução do número de lutas registradas, resumir os métodos de encerramento e avaliar se vencedores e derrotados diferem em altura, alcance, histórico de vitórias e média de quedas aplicadas.
+
 # Materiais e Métodos {#sec-metodos}
+
+## Conjunto de dados
+
+A coletânea *UFC Athletes and Fight Data*, publicada pelo TidyTuesday [@tidytuesdayUfc2026], reúne dados históricos de lutas, eventos, perfis de atletas, rankings e estatísticas de desempenho.
+
+As análises apresentadas na @sec-resultados utilizam o arquivo tratado `ufc_lutas_completo.rds`, derivado da versão de `ultimate_ufc_dataset.csv` publicada pelo TidyTuesday. Cada linha representa uma luta e reúne a data, a categoria de peso, o método de encerramento, o vencedor e as medidas dos atletas nos cantos vermelho e azul.
+
+```{r}
+#| label: carrega-dados
+
+lutas <- readRDS("../dados_limpos/ufc_lutas_completo.rds")
+```
+
+## Pré-processamento
+
+O script `scripts/02_limpeza_ufc.R` padroniza datas e textos, converte pesos de libras para quilogramas e remove colunas de apostas e rankings divisionais esparsos.
+
+## Técnicas estatísticas e computacionais
+
+As contagens anuais usam as lutas com data registrada. Para os métodos de encerramento, as decisões por unanimidade, divisão e maioria foram agrupadas. A proporção de cada método usa como denominador as lutas com método informado.
+
+A análise dos resultados considera apenas lutas com vencedor identificado como vermelho ou azul. Para cada variável, calcula-se a diferença entre os valores do vencedor e do derrotado. A comparação usa os pares com valores finitos, e os empates na variável são mantidos no denominador. As medidas são descritivas e os atletas podem aparecer em mais de um confronto.
+
+Os cálculos, as tabelas, o gráfico e os valores inseridos no texto são gerados em R [@rCore] com o pacote `knitr` [@Xie2026] durante a renderização do Quarto. Com os dados tratados do repositório, o HTML pode ser reproduzido a partir da raiz do projeto com `quarto render relatorio/relatorio_ufc.qmd --to html`.
+
 # Resultados e Discussão {#sec-resultados}
+
+## Evolução do número de lutas
+
+```{r}
+#| label: fig-lutas-ano
+#| fig-cap: "Número de lutas registradas por ano."
+
+anos <- table(format(lutas$date, "%Y"))
+plot(as.integer(names(anos)), as.integer(anos), type = "o",
+     pch = 16, col = "#245775", xlab = "Ano", ylab = "Lutas registradas")
+```
+
+A base contém `r nrow(lutas)` lutas com datas entre `r format(min(lutas$date, na.rm = TRUE), "%d/%m/%Y")` e `r format(max(lutas$date, na.rm = TRUE), "%d/%m/%Y")`. A @fig-lutas-ano mostra que `r names(which.max(anos))` teve a maior contagem do recorte, com `r max(anos)` lutas. Os anos nas extremidades da série podem ter cobertura parcial.
+
+## Métodos de encerramento
+
+```{r}
+#| label: tbl-metodos
+#| tbl-cap: "Distribuição dos métodos de encerramento informados."
+
+metodo <- trimws(lutas$finish)
+metodo[metodo %in% c("U-DEC", "S-DEC", "M-DEC")] <- "Decis\u00e3o"
+metodo[metodo %in% "SUB"] <- "Finaliza\u00e7\u00e3o"
+metodo[metodo %in% c("CNC", "DQ", "Overturned")] <- "Outros"
+metodo[metodo %in% ""] <- NA_character_
+frequencias <- sort(table(metodo), decreasing = TRUE)
+resumo_metodos <- data.frame(
+  Metodo = names(frequencias),
+  Lutas = as.integer(frequencias),
+  Percentual = round(100 * as.integer(frequencias) / sum(frequencias), 1)
+)
+knitr::kable(resumo_metodos, digits = 1,
+             col.names = c("M\u00e9todo", "Lutas", "Percentual"),
+             format.args = list(decimal.mark = ","))
+```
+
+A @tbl-metodos indica que o método mais frequente foi **`r names(frequencias)[1]`**, com `r as.integer(frequencias[1])` lutas. Houve `r sum(is.na(metodo))` registros sem método informado.
+
+### Métodos de encerramento por ano e gênero
+
+[aguardando analise]
+
+## Diferenças entre vencedores e derrotados
+
+```{r}
+#| label: tbl-vencedores
+#| tbl-cap: "Diferenças entre vencedores e derrotados em lutas com valores disponíveis."
+
+decididas <- lutas[lutas$winner %in% c("Red", "Blue"), ]
+sinal <- ifelse(decididas$winner == "Red", 1, -1)
+diferencas <- list(
+  altura = sinal * (decididas$r_height_cms - decididas$b_height_cms),
+  alcance = sinal * (decididas$r_reach_cms - decididas$b_reach_cms),
+  vitorias = sinal * (decididas$r_wins - decididas$b_wins),
+  quedas = sinal * (decididas$r_avg_td_landed - decididas$b_avg_td_landed)
+)
+resumo_vencedores <- do.call(rbind, lapply(diferencas, function(diferenca) {
+  valores <- diferenca[is.finite(diferenca)]
+  data.frame(
+    Pares = length(valores),
+    Mediana = median(valores),
+    percentual_maior = 100 * mean(valores > 0)
+  )
+}))
+rotulos <- c(
+  altura = "Altura (cm)",
+  alcance = "Alcance (cm)",
+  vitorias = "Vit\u00f3rias no hist\u00f3rico",
+  quedas = "M\u00e9dia de quedas aplicadas"
+)
+tabela_vencedores <- data.frame(
+  Variavel = unname(rotulos[rownames(resumo_vencedores)]),
+  resumo_vencedores
+)
+knitr::kable(tabela_vencedores, row.names = FALSE, digits = 1,
+             col.names = c("Vari\u00e1vel", "Pares", "Mediana", "Vencedor com valor maior (%)"),
+             format.args = list(decimal.mark = ","))
+```
+
+Na @tbl-vencedores, uma diferença positiva indica que o vencedor tinha o maior valor no confronto. Para alcance, isso ocorreu em `r format(round(resumo_vencedores["alcance", "percentual_maior"], 1), nsmall = 1, decimal.mark = ",")`% dos pares analisados. A frequência mede quantas vezes o vencedor superou o derrotado na variável e inclui os empates no denominador. As diferenças podem refletir a composição das categorias, o pareamento dos atletas e o histórico de desempenho.
+
+### Comparação entre vencedores e derrotados por categoria de peso
+
+[aguardando analise]
+
+## Perfil dos atletas por categoria de peso
+
+[aguardando analise]
+
+## Permanência dos atletas nos rankings
+
+[aguardando analise]
+
+## Disputas de cinturão
+
+[aguardando analise]
+
+## Distribuição geográfica dos eventos
+
+[aguardando analise]
+
 # Conclusão {#sec-conclusao}
-# Declaração de Uso de IA
-# Referências
+
+O número de lutas registradas variou ao longo do tempo, e `r tolower(names(frequencias)[1])` foi o desfecho mais frequente entre os registros com informação disponível. A comparação por confronto permitiu quantificar com que frequência os vencedores apresentaram valores maiores em alcance, altura, vitórias no histórico e média de quedas. A cobertura da base, os valores ausentes e a repetição de atletas limitam a interpretação. As associações são descritivas e não estimam o efeito causal desses atributos sobre o resultado.
+
+# Referências Bibliográficas {.unnumbered}
+
+::: {#refs}
+:::
