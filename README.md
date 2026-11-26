@@ -10,8 +10,8 @@ desenvolvidos como trabalho final da disciplina de Programação em R.
 |---|---|
 | Lucas | [@usuario1](https://github.com/usuario1) |
 | Felipe | [@felipinas26](https://github.com/felipinas26) |
-| Miguel Antunes de Lima | [@miguellima1188](https://github.com/miguellima1188)
-
+| Miguel Antunes de Lima | [@miguellima1188](https://github.com/miguellima1188)|
+| Rafael Dias | [@rwdias](https://github.com/rwdias)
 ## Banco de dados
 
 **UFC Athletes and Fight Data**, publicado no TidyTuesday em 07 de julho de 2026.
