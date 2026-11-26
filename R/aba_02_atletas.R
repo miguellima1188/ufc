@@ -89,6 +89,12 @@ aba_02_server <- function(id) {
     
     dados_filtrados <- reactive({
       df <- atletas_limpo %>%
+        mutate(
+          height_cm = na_if(height_cm, 0),
+          reach_cm  = na_if(reach_cm, 0),
+          age       = na_if(age, 0),
+          stance    = if_else(is.na(stance) | stance == "", "Não informada", stance)
+        ) %>%
         filter(total_fights >= input$min_lutas)
       
       if (input$categoria != "Todas") {
