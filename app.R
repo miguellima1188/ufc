@@ -1,3 +1,5 @@
+source("global.R")
+
 ui <- page_navbar(
   title = 'UFC Analytics',
   fillable = FALSE,
