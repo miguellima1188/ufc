@@ -3,6 +3,7 @@ library(bslib)
 library(tidyverse)
 library(plotly)
 library(DT)
+library(leaflet)
 
 arquivos_rds <- list.files('dados_limpos', pattern = '\\.rds$', full.names = TRUE)
 for (arq in arquivos_rds) {
