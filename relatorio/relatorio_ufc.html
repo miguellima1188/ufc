@@ -2430,6 +2430,8 @@ line-height: 1;
 <h3 data-number="2.3.1" class="anchored" data-anchor-id="reprodução-do-relatório"><span class="header-section-number">2.3.1</span> Reprodução do relatório</h3>
 <p>A renderização utiliza o Quarto, o R e os pacotes <code>knitr</code> e <code>rmarkdown</code> <span class="citation" data-cites="AllaireRmarkdown2026">(<a href="#ref-AllaireRmarkdown2026" role="doc-biblioref">Allaire et al., 2026b</a>)</span>. O ambiente de referência usou Quarto 1.10.18, R 4.6.2, <code>knitr</code> 1.52 e <code>rmarkdown</code> 2.32. Os dados tratados estão em <code>dados_limpos/</code>. A renderização acessa pela internet o estilo CSL indicado no cabeçalho do documento.</p>
 <p>Para instalar os pacotes no R, execute <code>install.packages(c(&quot;knitr&quot;, &quot;rmarkdown&quot;))</code>. Na raiz do repositório, gere o HTML com <code>quarto render relatorio/relatorio_ufc.qmd --to html</code>.</p>
+<p>Para regenerar os arquivos tratados, o script <code>scripts/02_limpeza_ufc.R</code> lê os CSVs do TidyTuesday e carrega os pacotes <code>tidytuesdayR</code>, <code>lubridate</code>, <code>dplyr</code>, <code>readr</code>, <code>purrr</code> e <code>stringr</code>. O script de download <code>scripts/01_download.R</code> usa <code>here</code> para localizar a pasta <code>data/raw/</code>.</p>
+<p>Os resultados geográficos do relatório são reproduzidos a partir de <code>locais_mais_eventos.rds</code> e <code>paises_mais_eventos.rds</code>. Na branch <code>main</code>, o mapa interativo da aba Locais &amp; Eventos combina as contagens por cidade com <code>dados_auxiliares/coordenadas_cidades.csv</code> e usa o pacote <code>leaflet</code> para exibir os pontos.</p>
 </section>
 </section>
 </section>

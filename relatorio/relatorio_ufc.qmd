@@ -174,6 +174,10 @@ A renderização utiliza o Quarto, o R e os pacotes `knitr` e `rmarkdown` [@Alla
 
 Para instalar os pacotes no R, execute `install.packages(c("knitr", "rmarkdown"))`. Na raiz do repositório, gere o HTML com `quarto render relatorio/relatorio_ufc.qmd --to html`.
 
+Para regenerar os arquivos tratados, o script `scripts/02_limpeza_ufc.R` lê os CSVs do TidyTuesday e carrega os pacotes `tidytuesdayR`, `lubridate`, `dplyr`, `readr`, `purrr` e `stringr`. O script de download `scripts/01_download.R` usa `here` para localizar a pasta `data/raw/`.
+
+Os resultados geográficos do relatório são reproduzidos a partir de `locais_mais_eventos.rds` e `paises_mais_eventos.rds`. Na branch `main`, o mapa interativo da aba Locais & Eventos combina as contagens por cidade com `dados_auxiliares/coordenadas_cidades.csv` e usa o pacote `leaflet` para exibir os pontos.
+
 # Resultados e Discussão {#sec-resultados}
 
 ## Evolução do número de lutas
