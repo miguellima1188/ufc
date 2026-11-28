@@ -1,5 +1,5 @@
 # ============================================================================
-# ABA 8 — FINALIZAÇÕES: RAIO-X DOS GOLPES E MÉTODOS POR ANO
+# ABA 8 FINALIZAÇÕES: RAIO-X DOS GOLPES E MÉTODOS POR ANO
 # ----------------------------------------------------------------------------
 # Funções auxiliares começam com "fin_" para não dar conflito com as outras abas.
 # ============================================================================
@@ -186,7 +186,7 @@ aba_08_ui <- function(id) {
   
   layout_sidebar(
     sidebar = sidebar(
-      title = "Filtros — Finalizações",
+      title = "Filtros - Finalizações",
       width = 300,
       sliderInput(
         inputId = ns("periodo"),
@@ -347,8 +347,8 @@ aba_08_server <- function(id) {
     kpis <- reactive({
       df <- dados()
       vazio <- list(
-        taxa = "—", taxa_sub = "", ko = "—", ko_sub = "", sub = "—", sub_sub = "",
-        golpe = "—", golpe_sub = "", tecnica = "—", tecnica_sub = ""
+        taxa = "-", taxa_sub = "", ko = "-", ko_sub = "", sub = "-", sub_sub = "",
+        golpe = "-", golpe_sub = "", tecnica = "-", tecnica_sub = ""
       )
       if (nrow(df) == 0) return(vazio)
       
@@ -370,11 +370,11 @@ aba_08_server <- function(id) {
         ko_sub = paste0(fin_pct(n_ko / n), " das lutas"),
         sub = fin_int(n_sub),
         sub_sub = paste0(fin_pct(n_sub / n), " das lutas"),
-        golpe = if (nrow(golpes) > 0) golpes$familia[1] else "—",
+        golpe = if (nrow(golpes) > 0) golpes$familia[1] else "-",
         golpe_sub = if (nrow(golpes) > 0) {
           paste0(fin_pct(golpes$n[1] / sum(golpes$n)), " dos KO/TKO com golpe registrado")
         } else "",
-        tecnica = if (nrow(tecnicas) > 0) tecnicas$tecnica[1] else "—",
+        tecnica = if (nrow(tecnicas) > 0) tecnicas$tecnica[1] else "-",
         tecnica_sub = if (nrow(tecnicas) > 0) {
           paste0(fin_pct(tecnicas$n[1] / sum(tecnicas$n)), " das finalizações com técnica registrada")
         } else ""
@@ -449,7 +449,7 @@ aba_08_server <- function(id) {
             pct = 100 * n / total_ano,
             tecnica = factor(tecnica, levels = rev(top)),
             texto = paste0(
-              "<b>", ano, " — ", tecnica, "</b><br>", n, " lutas (",
+              "<b>", ano, " - ", tecnica, "</b><br>", n, " lutas (",
               formatC(pct, format = "f", digits = 1, decimal.mark = ","),
               "% das finalizações do ano com técnica registrada)"
             )
@@ -470,7 +470,7 @@ aba_08_server <- function(id) {
           group_by(ano, metodo) %>%
           summarise(tempo_min = mean(tempo_seg) / 60, n = n(), .groups = "drop") %>%
           mutate(texto = paste0(
-            "<b>", ano, " — ", metodo, "</b><br>Tempo médio: ",
+            "<b>", ano, " - ", metodo, "</b><br>Tempo médio: ",
             fin_mmss(tempo_min * 60), " (", n, " lutas)"
           ))
         validate(need(nrow(d) > 0, msg_vazio))
@@ -534,7 +534,7 @@ aba_08_server <- function(id) {
         mutate(pct = 100 * n / sum(n)) %>%
         ungroup() %>%
         mutate(texto = paste0(
-          "<b>", metodo, " — ", rodada, " round</b><br>", n, " lutas (",
+          "<b>", metodo, " - ", rodada, " round</b><br>", n, " lutas (",
           formatC(pct, format = "f", digits = 1, decimal.mark = ","), "%)"
         ))
       p <- ggplot(d, aes(x = rodada, y = pct, fill = metodo, text = texto)) +
@@ -667,8 +667,8 @@ aba_08_server <- function(id) {
           `Finalização total (%)`  = pct_fin,
           `KO/TKO (%)`             = pct_ko,
           `Submissão (%)`          = pct_sub,
-          `Golpe predominante`     = coalesce(golpe, "—"),
-          `Finalização predominante` = coalesce(tecnica, "—"),
+          `Golpe predominante`     = coalesce(golpe, "-"),
+          `Finalização predominante` = coalesce(tecnica, "-"),
           `Tempo médio KO/TKO (min)` = tempo_ko,
           `Tempo médio Sub. (min)`  = tempo_sub,
           `Sem detalhe`            = sem_detalhe

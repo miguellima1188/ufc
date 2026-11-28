@@ -1,5 +1,5 @@
 # ============================================================================
-# ABA 9 — CINTURÃO: HISTÓRICO DE DISPUTAS, REINADOS E MAIORES DISPUTADORES
+# ABA 9 CINTURÃO: HISTÓRICO DE DISPUTAS, REINADOS E MAIORES DISPUTADORES
 # ----------------------------------------------------------------------------
 # Funções auxiliares começam com "cin_" para não dar conflito com as outras abaa
 # ============================================================================
@@ -236,7 +236,7 @@ cin_graf_timeline <- function(r) {
       categoria = factor(categoria, levels = niveis),
       sobrenome = stringr::word(lutador, -1),
       texto = paste0(
-        "<b>", lutador, "</b> — ", categoria, "<br>",
+        "<b>", lutador, "</b> - ", categoria, "<br>",
         cin_data(inicio), " a ", cin_data(fim), " (", cin_int(dias), " dias)<br>",
         defesas, ifelse(defesas == 1, " defesa", " defesas"), "<br>", termino
       )
@@ -321,7 +321,7 @@ cin_graf_reinados_longos <- function(rein) {
     slice_head(n = 10) %>%
     mutate(
       rotulo = paste0(lutador, " · ", format(inicio, "%Y")),
-      texto = paste0("<b>", lutador, "</b> — ", categoria, "<br>",
+      texto = paste0("<b>", lutador, "</b> - ", categoria, "<br>",
                      cin_data(inicio), " a ", cin_data(fim), "<br>",
                      cin_int(dias), " dias · ", defesas,
                      ifelse(defesas == 1, " defesa", " defesas"))
@@ -430,7 +430,7 @@ aba_09_ui <- function(id) {
   
   layout_sidebar(
     sidebar = sidebar(
-      title = "Filtros — Cinturão",
+      title = "Filtros - Cinturão",
       width = 300,
       sliderInput(
         inputId = ns("periodo"),
@@ -633,9 +633,9 @@ aba_09_server <- function(id) {
     kpis <- reactive({
       df <- dados()
       vazio <- list(
-        disputas = "—", disputas_sub = "", campeoes = "—", campeoes_sub = "",
-        disputador = "—", disputador_sub = "", reinado = "—", reinado_sub = "",
-        finaliza = "—", finaliza_sub = ""
+        disputas = "-", disputas_sub = "", campeoes = "-", campeoes_sub = "",
+        disputador = "-", disputador_sub = "", reinado = "-", reinado_sub = "",
+        finaliza = "-", finaliza_sub = ""
       )
       if (nrow(df) == 0) return(vazio)
       
