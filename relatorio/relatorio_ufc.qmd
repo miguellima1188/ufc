@@ -2,31 +2,103 @@
 title: "Análise Estatística dos Dados Históricos do UFC"
 subtitle: "CE302 — Elementos de Programação para Estatística"
 author:
-  - name: "Lucas"
-    affiliation: "Departamento de Estatística, UFPR"
   - name: "Felipe"
-    affiliation: "Departamento de Estatística, UFPR"
+    affiliation: "Estudante de graduação em Estatística, UFPR"
+  - name: "Lucas"
+    affiliation: "Estudante de graduação em Estatística, UFPR"
   - name: "Miguel Antunes de Lima"
-    affiliation: "Departamento de Estatística, UFPR"
+    affiliation: "Estudante de graduação em Estatística, UFPR"
   - name: "Rafael Dias"
-    affiliation: "Departamento de Estatística, UFPR"
+    affiliation: "Estudante de graduação em Estatística, UFPR"
 date: today
 date-format: "DD/MM/YYYY"
 lang: pt-BR
+fig-cap-location: top
+tbl-cap-location: top
+crossref:
+  title-delim: "\u00a0–"
 format:
   html:
     toc: true
     toc-title: "Sumário"
     toc-depth: 3
+    format-links: false
     number-sections: true
     theme: cosmo
+    fig-align: left
     code-fold: true
     code-summary: "Ver código"
     embed-resources: true
+    include-in-header:
+      text: |
+        <style>
+          body {
+            font-family: Arial, Helvetica, sans-serif;
+            font-size: 12pt;
+            line-height: normal;
+          }
+          #title-block-header .title {
+            font-size: clamp(1.6rem, 3vw, 2rem);
+            font-weight: 700;
+            line-height: 1.15;
+            text-wrap: balance;
+          }
+          #title-block-header .subtitle {
+            font-size: 1rem;
+            line-height: 1.3;
+          }
+          #quarto-document-content section > :is(h1, h2, h3) {
+            margin-block: 1.5em .65em;
+            line-height: 1.2;
+            font-weight: 700;
+          }
+          #quarto-document-content section > h1 {
+            font-size: 1.5rem;
+          }
+          #quarto-document-content section > h2 {
+            font-size: 1.2rem;
+            border-bottom: 0;
+            padding-bottom: 0;
+          }
+          #quarto-document-content section > h3 {
+            font-size: 1.05rem;
+          }
+          #quarto-document-content h1.unnumbered,
+          #TOC > h2 {
+            text-align: center;
+          }
+          #quarto-document-content p {
+            margin-bottom: 1em;
+          }
+          #quarto-document-content section > p:not(:has(> span.small)) {
+            text-align: justify;
+            hyphens: auto;
+          }
+          #quarto-document-content :is(.quarto-figure, .quarto-float > figure, .quarto-float table) {
+            margin-bottom: .35em;
+          }
+          figcaption.quarto-float-caption {
+            text-align: left;
+          }
+          figcaption.quarto-float-caption,
+          p > span.small {
+            font-size: 10pt;
+          }
+          #refs .csl-entry {
+            margin-left: 0;
+            margin-bottom: 1em;
+            text-indent: 0;
+            text-align: left;
+            line-height: 1;
+          }
+        </style>
   pdf:
     toc: true
     toc-title: "Sumário"
     number-sections: true
+    mainfont: Arial
+    fontsize: 12pt
+    linestretch: 1
 bibliography: referencias.bib
 csl: https://raw.githubusercontent.com/citation-style-language/styles/master/associacao-brasileira-de-normas-tecnicas.csl
 execute:
@@ -49,11 +121,28 @@ formata_pct <- function(x) {
 }
 ```
 
+```{r}
+#| label: carrega-dados
+#| include: false
+
+lutas <- readRDS("../dados_limpos/ufc_lutas_completo.rds")
+atletas <- readRDS("../dados_limpos/atletas_limpo.rds")
+rankings <- readRDS("../dados_limpos/rankings_limpo.rds")
+locais <- readRDS("../dados_limpos/locais_mais_eventos.rds")
+paises <- readRDS("../dados_limpos/paises_mais_eventos.rds")
+```
+
+# Resumo {.unnumbered .unlisted}
+
+Este estudo descreve o histórico de confrontos do Ultimate Fighting Championship (UFC) e investiga como os resultados se associam às características registradas dos atletas. A análise descritiva de `r nrow(lutas)` lutas combina séries anuais dos métodos de encerramento com comparações pareadas de altura, envergadura, histórico de vitórias e média de quedas aplicadas entre vencedores e derrotados. Os perfis dos atletas, os rankings, as disputas de cinturão e a localização dos eventos contextualizam os confrontos. As decisões foram o método de encerramento mais frequente. As comparações por categoria mostraram variação na proporção de vencedores com medidas maiores que as dos derrotados. A cobertura das bases, os empates nas medidas e a repetição de atletas são relevantes para interpretar essas diferenças.
+
+**Palavras-chave:** artes marciais mistas; análise descritiva; desempenho esportivo; categorias de peso.
+
 # Introdução {#sec-introducao}
 
 No Ultimate Fighting Championship (UFC), uma luta pode terminar antes do último round ou ser decidida pelos juízes. O histórico de confrontos permite comparar a frequência desses desfechos e investigar como as características dos atletas se associam ao resultado das lutas.
 
-O objetivo é descrever a evolução do número de lutas e seus métodos de encerramento e comparar vencedores e derrotados em altura, alcance, histórico de vitórias e média de quedas aplicadas. Para contextualizar os confrontos, o relatório examina o perfil dos atletas por categoria de peso, sua permanência nos rankings, as disputas de cinturão e a distribuição geográfica dos eventos.
+O objetivo é descrever a evolução do número de lutas e seus métodos de encerramento e comparar vencedores e derrotados em altura, envergadura, histórico de vitórias e média de quedas aplicadas. Para contextualizar os confrontos, o relatório examina o perfil dos atletas por categoria de peso, sua permanência nos rankings, as disputas de cinturão e a distribuição geográfica dos eventos.
 
 # Materiais e Métodos {#sec-metodos}
 
@@ -63,16 +152,6 @@ A coletânea *UFC Athletes and Fight Data*, publicada pelo TidyTuesday [@tidytue
 
 As análises de confrontos da @sec-resultados utilizam o arquivo tratado `ufc_lutas_completo.rds`, derivado da versão de `ultimate_ufc_dataset.csv` publicada pelo TidyTuesday. Cada linha representa uma luta e reúne a data, a categoria de peso, o método de encerramento, o vencedor e as medidas dos atletas nos cantos vermelho e azul. Os perfis de atletas e as posições nos rankings vêm de `atletas_limpo.rds` e `rankings_limpo.rds`. A distribuição geográfica utiliza as contagens de eventos em `locais_mais_eventos.rds` e `paises_mais_eventos.rds`, derivadas do histórico `ufc_fights.csv`. O histórico de eventos e a base de confrontos têm coberturas diferentes.
 
-```{r}
-#| label: carrega-dados
-
-lutas <- readRDS("../dados_limpos/ufc_lutas_completo.rds")
-atletas <- readRDS("../dados_limpos/atletas_limpo.rds")
-rankings <- readRDS("../dados_limpos/rankings_limpo.rds")
-locais <- readRDS("../dados_limpos/locais_mais_eventos.rds")
-paises <- readRDS("../dados_limpos/paises_mais_eventos.rds")
-```
-
 ## Pré-processamento
 
 O script `scripts/02_limpeza_ufc.R` padroniza datas e textos, converte pesos de libras para quilogramas e remove colunas de apostas e rankings divisionais esparsos.
@@ -81,13 +160,19 @@ O script `scripts/02_limpeza_ufc.R` padroniza datas e textos, converte pesos de 
 
 As contagens anuais usam as lutas com data registrada. Para os métodos de encerramento, as decisões por unanimidade, divisão e maioria foram agrupadas. A proporção de cada método usa como denominador as lutas com método informado.
 
-A comparação entre vencedores e derrotados considera lutas com vencedor identificado como vermelho ou azul. Para cada variável, calcula-se a diferença entre os valores do vencedor e do derrotado. A comparação usa os pares com valores finitos e mantém os empates na variável no denominador.
+A comparação entre vencedores e derrotados considera lutas com vencedor identificado como vermelho ou azul. Para cada variável, calcula-se a diferença entre os valores do vencedor e do derrotado. Altura e envergadura são medidas em centímetros. Os indicadores de desempenho registram as vitórias anteriores no UFC e a média de quedas aplicadas por 15 minutos, conforme o dicionário de dados [@tidytuesdayUfc2026]. A comparação usa pares com valores finitos. Medidas de altura ou envergadura iguais a zero são tratadas como ausentes, e os empates na variável permanecem no denominador. As proporções são calculadas para o conjunto das lutas e por categoria de peso, com o número de pares válidos indicado para cada medida. As lutas em peso combinado mantêm a classificação *Catch Weight* da base.
 
 Nos perfis, valores iguais a zero em altura, envergadura e idade são tratados como ausentes. O resumo por categoria apresenta a média e o número de registros disponíveis para cada medida. Nos rankings divisionais, a permanência é medida pelo número de datas distintas em que cada atleta aparece, e a melhor posição corresponde ao menor valor registrado, com zero representando o campeão. Nas sínteses por gênero, a média da permanência considera cada combinação de atleta e divisão, enquanto os totais de atletas e campeões contam cada atleta uma vez em cada grupo. O retrato mais recente considera a última data disponível na base divisional.
 
 Para as disputas de cinturão, aplica-se a correção de classificação documentada em `R/aba_09_cinturao.R` na versão integrada à `main`. O recorte usa as lutas marcadas como disputa de título com cinco rounds programados, mantém os registros de 11/07/2020 que o módulo identifica como exceção e retira as lutas da lista de exclusão do módulo. A taxa de vitória é calculada entre as disputas com vencedor registrado. Na análise geográfica, cada evento é contado uma vez pela combinação de nome, data e local, e as variações de endereço para a mesma cidade e país são somadas.
 
-Os cálculos, as tabelas, os gráficos e os valores inseridos no texto são gerados em R [@rCore] com o pacote `knitr` [@Xie2026] durante a renderização do Quarto. Com os dados tratados do repositório, o HTML pode ser reproduzido a partir da raiz do projeto com `quarto render relatorio/relatorio_ufc.qmd --to html`.
+Os cálculos, as tabelas, os gráficos e os valores inseridos no texto são gerados em R [@rCore] com o pacote `knitr` [@Xie2026] durante a renderização do Quarto [@AllaireQuarto2026].
+
+### Reprodução do relatório
+
+A renderização utiliza o Quarto, o R e os pacotes `knitr` e `rmarkdown` [@AllaireRmarkdown2026]. O ambiente de referência usou Quarto 1.10.18, R `r as.character(getRversion())`, `knitr` `r as.character(utils::packageVersion("knitr"))` e `rmarkdown` `r as.character(utils::packageVersion("rmarkdown"))`. Os dados tratados estão em `dados_limpos/`. A renderização acessa pela internet o estilo CSL indicado no cabeçalho do documento.
+
+Para instalar os pacotes no R, execute `install.packages(c("knitr", "rmarkdown"))`. Na raiz do repositório, gere o HTML com `quarto render relatorio/relatorio_ufc.qmd --to html`.
 
 # Resultados e Discussão {#sec-resultados}
 
@@ -101,6 +186,8 @@ anos <- table(format(lutas$date, "%Y"))
 plot(as.integer(names(anos)), as.integer(anos), type = "o",
      pch = 16, col = "#245775", xlab = "Ano", ylab = "Lutas registradas")
 ```
+
+[Fonte: elaboração própria com dados do TidyTuesday [@tidytuesdayUfc2026].]{.small}
 
 A base contém `r nrow(lutas)` lutas com datas entre `r format(min(lutas$date, na.rm = TRUE), "%d/%m/%Y")` e `r format(max(lutas$date, na.rm = TRUE), "%d/%m/%Y")`. A @fig-lutas-ano mostra que `r names(which.max(anos))` teve a maior contagem do recorte, com `r max(anos)` lutas. Os anos nas extremidades da série podem ter cobertura parcial.
 
@@ -125,6 +212,8 @@ knitr::kable(resumo_metodos, digits = 1,
              col.names = c("M\u00e9todo", "Lutas", "Percentual"),
              format.args = list(decimal.mark = ","))
 ```
+
+[Fonte: elaboração própria com dados do TidyTuesday [@tidytuesdayUfc2026].]{.small}
 
 A @tbl-metodos indica que o método mais frequente foi **`r names(frequencias)[1]`**, com `r as.integer(frequencias[1])` lutas. Houve `r sum(is.na(metodo))` registros sem método informado.
 
@@ -160,7 +249,17 @@ for (grupo in levels(genero)) {
 par(config_grafico)
 ```
 
+[Fonte: elaboração própria com dados do TidyTuesday [@tidytuesdayUfc2026].]{.small}
+
 No período observado, as decisões representaram `r formata_pct(percentuais_periodo["Decisão", "Masculino"])` dos desfechos masculinos e `r formata_pct(percentuais_periodo["Decisão", "Feminino"])` dos femininos com método e data informados. A @fig-metodos-ano-genero usa o total de lutas de cada gênero e ano como denominador. Anos com poucos registros podem apresentar grandes oscilações de proporção, e os percentuais do período combinam lutas de anos com coberturas diferentes.
+
+### Métodos de encerramento e duração das lutas por categoria de peso
+
+[aguardando analise]
+
+### Técnicas de nocaute e finalização
+
+[aguardando analise]
 
 ## Diferenças entre vencedores e derrotados
 
@@ -170,20 +269,30 @@ No período observado, as decisões representaram `r formata_pct(percentuais_per
 
 decididas <- lutas[lutas$winner %in% c("Red", "Blue"), ]
 sinal <- ifelse(decididas$winner == "Red", 1, -1)
+
+diferenca_fisica <- function(vermelho, azul) {
+  ifelse(vermelho > 0 & azul > 0, sinal * (vermelho - azul), NA_real_)
+}
+
 diferencas <- list(
-  altura = sinal * (decididas$r_height_cms - decididas$b_height_cms),
-  alcance = sinal * (decididas$r_reach_cms - decididas$b_reach_cms),
+  altura = diferenca_fisica(decididas$r_height_cms, decididas$b_height_cms),
+  alcance = diferenca_fisica(decididas$r_reach_cms, decididas$b_reach_cms),
   vitorias = sinal * (decididas$r_wins - decididas$b_wins),
   quedas = sinal * (decididas$r_avg_td_landed - decididas$b_avg_td_landed)
 )
-resumo_vencedores <- do.call(rbind, lapply(diferencas, function(diferenca) {
+
+resumir_diferenca <- function(diferenca) {
   valores <- diferenca[is.finite(diferenca)]
-  data.frame(
-    Pares = length(valores),
-    Mediana = median(valores),
-    percentual_maior = 100 * mean(valores > 0)
+  c(
+    pares = length(valores),
+    mediana = median(valores),
+    maior = 100 * mean(valores > 0),
+    igual = 100 * mean(valores == 0),
+    menor = 100 * mean(valores < 0)
   )
-}))
+}
+
+resumo_vencedores <- t(vapply(diferencas, resumir_diferenca, numeric(5)))
 rotulos <- c(
   altura = "Altura (cm)",
   alcance = "Alcance (cm)",
@@ -195,15 +304,53 @@ tabela_vencedores <- data.frame(
   resumo_vencedores
 )
 knitr::kable(tabela_vencedores, row.names = FALSE, digits = 1,
-             col.names = c("Vari\u00e1vel", "Pares", "Mediana", "Vencedor com valor maior (%)"),
+             col.names = c("Vari\u00e1vel", "Pares", "Mediana", "Maior (%)", "Igual (%)", "Menor (%)"),
              format.args = list(decimal.mark = ","))
 ```
 
-Na @tbl-vencedores, uma diferença positiva indica que o vencedor tinha o maior valor no confronto. Para alcance, isso ocorreu em `r format(round(resumo_vencedores["alcance", "percentual_maior"], 1), nsmall = 1, decimal.mark = ",")`% dos pares analisados. A frequência mede quantas vezes o vencedor superou o derrotado na variável e inclui os empates no denominador. As diferenças podem refletir a composição das categorias, o pareamento dos atletas e o histórico de desempenho.
+[Fonte: elaboração própria com dados do TidyTuesday [@tidytuesdayUfc2026].]{.small}
+
+Na @tbl-vencedores, uma diferença positiva indica que o vencedor tinha o maior valor da medida. O vencedor apresentou maior envergadura em `r formata_pct(resumo_vencedores["alcance", "maior"])` dos pares válidos, envergadura igual em `r formata_pct(resumo_vencedores["alcance", "igual"])` e menor em `r formata_pct(resumo_vencedores["alcance", "menor"])`. Entre as lutas decididas, o número de pares excluídos por valores ausentes ou inválidos foi de `r nrow(decididas) - resumo_vencedores["alcance", "pares"]` na análise de envergadura e de `r nrow(decididas) - resumo_vencedores["quedas", "pares"]` na análise de quedas.
 
 ### Comparação entre vencedores e derrotados por categoria de peso
 
-[aguardando analise]
+```{r}
+#| label: tbl-vencedores-categoria
+#| tbl-cap: "Vencedores com valor maior que o do derrotado, por categoria de peso."
+
+por_categoria <- split(seq_len(nrow(decididas)), decididas$weight_class)
+por_categoria <- por_categoria[order(lengths(por_categoria), decreasing = TRUE)]
+
+resumos_categoria <- lapply(por_categoria, function(indices) {
+  vapply(diferencas, function(valores) resumir_diferenca(valores[indices]), numeric(5))
+})
+
+formatar_categoria <- function(resumo) {
+  pares <- resumo["pares", ]
+  ifelse(pares > 0, sprintf("%s (%d)", formata_pct(resumo["maior", ]), pares), "—")
+}
+
+tabela_categoria <- data.frame(
+  Categoria = names(por_categoria),
+  Lutas = unname(lengths(por_categoria)),
+  do.call(rbind, lapply(resumos_categoria, formatar_categoria)),
+  row.names = NULL
+)
+alcance_por_categoria <- vapply(resumos_categoria, function(resumo) {
+  resumo["maior", "alcance"]
+}, numeric(1))
+menor_alcance <- which.min(alcance_por_categoria)
+maior_alcance <- which.max(alcance_por_categoria)
+
+knitr::kable(
+  tabela_categoria, row.names = FALSE,
+  col.names = c("Categoria", "Lutas decididas", "Altura", "Envergadura", "Vitórias", "Quedas")
+)
+```
+
+[Fonte: elaboração própria com dados do TidyTuesday [@tidytuesdayUfc2026].]{.small}
+
+Na @tbl-vencedores-categoria, cada célula apresenta o percentual de pares em que o vencedor teve o maior valor, seguido do número de pares válidos entre parênteses. A proporção de vencedores com maior envergadura variou de `r formata_pct(alcance_por_categoria[menor_alcance])` em *`r tabela_categoria$Categoria[menor_alcance]`* a `r formata_pct(alcance_por_categoria[maior_alcance])` em *`r tabela_categoria$Categoria[maior_alcance]`*. Nas duas categorias com mais confrontos decididos, *`r tabela_categoria$Categoria[1]`* e *`r tabela_categoria$Categoria[2]`*, os percentuais foram de `r formata_pct(alcance_por_categoria[1])` e `r formata_pct(alcance_por_categoria[2])`, respectivamente. Percentuais baseados em poucos confrontos são mais sensíveis a resultados individuais. As proporções dentro das divisões podem refletir a seleção dos adversários e a experiência dos atletas.
 
 ## Perfil dos atletas por categoria de peso
 
@@ -238,7 +385,17 @@ knitr::kable(
 )
 ```
 
+[Fonte: elaboração própria com dados do TidyTuesday [@tidytuesdayUfc2026].]{.small}
+
 A categoria *`r mais_registros$Categoria`* teve o maior número de registros (`r mais_registros$Registros`). A altura média variou de `r formatC(menor_altura$Altura, format = "f", digits = 1, decimal.mark = ",")` cm em *`r menor_altura$Categoria`* a `r formatC(maior_altura$Altura, format = "f", digits = 1, decimal.mark = ",")` cm em *`r maior_altura$Categoria`*. Os denominadores da @tbl-perfil-categorias variam entre medidas devido aos valores ausentes. Ao todo, `r nrow(atletas) - sum(perfil$Registros)` registros ficaram fora da tabela por falta de categoria.
+
+## Recordes dos atletas
+
+[aguardando analise]
+
+## Comparação individual entre atletas
+
+[aguardando analise]
 
 ## Permanência dos atletas nos rankings
 
@@ -267,6 +424,8 @@ knitr::kable(
   col.names = c("Atleta", "Categoria", "Datas no ranking", "Melhor posição", "Datas como campeão")
 )
 ```
+
+[Fonte: elaboração própria com dados do TidyTuesday [@tidytuesdayUfc2026].]{.small}
 
 Entre `r format(min(divisionais$date), "%d/%m/%Y")` e `r format(max(divisionais$date), "%d/%m/%Y")`, a maior permanência observada foi a de `r permanencia$Atleta[1]` na categoria *`r permanencia$Categoria[1]`*, com `r permanencia$Datas[1]` datas no ranking. A @tbl-ranking-permanencia conta aparições em publicações distintas. Um atleta pode sair e voltar ao ranking durante esse intervalo.
 
@@ -301,6 +460,8 @@ knitr::kable(
   format.args = list(decimal.mark = ",")
 )
 ```
+
+[Fonte: elaboração própria com dados do TidyTuesday [@tidytuesdayUfc2026].]{.small}
 
 O ranking divisional de `r format(data_recente, "%d/%m/%Y")` registrou `r sum(resumo_rankings$Posicoes)` posições. A @tbl-ranking-genero apresenta a cobertura histórica e as posições dessa publicação. Como as divisões têm períodos de cobertura diferentes, as médias de aparições descrevem o histórico observado de cada grupo.
 
@@ -346,6 +507,8 @@ knitr::kable(
 )
 ```
 
+[Fonte: elaboração própria com dados do TidyTuesday [@tidytuesdayUfc2026].]{.small}
+
 Após a correção da classificação, o recorte reuniu `r nrow(disputas)` disputas de cinturão. O total inclui `r nrow(disputas) - nrow(com_vencedor)` sem vencedor identificado. Na @tbl-cinturao, `r resumo_titulo$Atleta[1]` liderou em participações, com `r resumo_titulo$Disputas[1]` disputas e `r resumo_titulo$Vitorias[1]` vitórias. O total de participações descreve a frequência de disputas de cada atleta, enquanto o aproveitamento considera apenas as disputas decididas.
 
 ## Distribuição geográfica dos eventos
@@ -379,17 +542,19 @@ knitr::kable(
 )
 ```
 
+[Fonte: elaboração própria com dados do TidyTuesday [@tidytuesdayUfc2026].]{.small}
+
 O histórico contém `r total_eventos` eventos distribuídos por `r nrow(paises)` países ou territórios. A @tbl-paises-eventos é liderada por `r tabela_paises$Pais[1]`, com `r tabela_paises$Eventos[1]` eventos (`r formata_pct(tabela_paises$Percentual[1])` do total). `r cidades$cidade[1]` foi a cidade com mais eventos no período (`r cidades$total_eventos[1]`).
 
 # Conclusão {#sec-conclusao}
 
-O número de lutas registradas variou ao longo do tempo. A `r tolower(names(frequencias)[1])` foi o desfecho mais frequente e teve participação maior entre as lutas femininas no período. Na comparação por confronto, os vencedores tiveram maior alcance em `r formata_pct(resumo_vencedores["alcance", "percentual_maior"])` dos pares, com os empates incluídos no denominador.
+O número de lutas registradas variou ao longo do tempo. A `r tolower(names(frequencias)[1])` foi o desfecho mais frequente e teve participação maior entre as lutas femininas no período. Na comparação por confronto, os vencedores tiveram maior envergadura em `r formata_pct(resumo_vencedores["alcance", "maior"])` dos pares válidos. O percentual variou entre categorias de peso, e a disponibilidade das medidas foi desigual entre os indicadores.
 
 As categorias apresentaram perfis físicos distintos, e as datas de publicação dos rankings permitiram identificar os atletas com mais aparições por divisão. O recorte corrigido de cinturão reuniu `r nrow(disputas)` disputas. No histórico de eventos, `r tabela_paises$Pais[1]` concentrou `r formata_pct(tabela_paises$Percentual[1])` das ocorrências.
 
 A cobertura das bases, os valores ausentes e a repetição de atletas limitam a interpretação. As comparações são descritivas e os percentuais agregados podem refletir diferenças na composição dos confrontos por categoria e período.
 
-# Referências Bibliográficas {.unnumbered}
+# Referências {.unnumbered}
 
 ::: {#refs}
 :::
