@@ -43,13 +43,17 @@ execute:
 if (.Platform$OS.type == "windows" && !l10n_info()[["UTF-8"]]) {
   Sys.setlocale("LC_CTYPE", ".UTF-8")
 }
+
+formata_pct <- function(x) {
+  paste0(formatC(x, format = "f", digits = 1, decimal.mark = ","), "%")
+}
 ```
 
 # Introdução {#sec-introducao}
 
 No Ultimate Fighting Championship (UFC), uma luta pode terminar antes do último round ou ser decidida pelos juízes. O histórico de confrontos permite comparar a frequência desses desfechos e investigar como as características dos atletas se associam ao resultado das lutas.
 
-O objetivo deste relatório é descrever a evolução do número de lutas registradas, resumir os métodos de encerramento e avaliar se vencedores e derrotados diferem em altura, alcance, histórico de vitórias e média de quedas aplicadas.
+O objetivo é descrever a evolução do número de lutas e seus métodos de encerramento e comparar vencedores e derrotados em altura, alcance, histórico de vitórias e média de quedas aplicadas. Para contextualizar os confrontos, o relatório examina o perfil dos atletas por categoria de peso, sua permanência nos rankings, as disputas de cinturão e a distribuição geográfica dos eventos.
 
 # Materiais e Métodos {#sec-metodos}
 
@@ -57,12 +61,16 @@ O objetivo deste relatório é descrever a evolução do número de lutas regist
 
 A coletânea *UFC Athletes and Fight Data*, publicada pelo TidyTuesday [@tidytuesdayUfc2026], reúne dados históricos de lutas, eventos, perfis de atletas, rankings e estatísticas de desempenho.
 
-As análises apresentadas na @sec-resultados utilizam o arquivo tratado `ufc_lutas_completo.rds`, derivado da versão de `ultimate_ufc_dataset.csv` publicada pelo TidyTuesday. Cada linha representa uma luta e reúne a data, a categoria de peso, o método de encerramento, o vencedor e as medidas dos atletas nos cantos vermelho e azul.
+As análises de confrontos da @sec-resultados utilizam o arquivo tratado `ufc_lutas_completo.rds`, derivado da versão de `ultimate_ufc_dataset.csv` publicada pelo TidyTuesday. Cada linha representa uma luta e reúne a data, a categoria de peso, o método de encerramento, o vencedor e as medidas dos atletas nos cantos vermelho e azul. Os perfis de atletas e as posições nos rankings vêm de `atletas_limpo.rds` e `rankings_limpo.rds`. A distribuição geográfica utiliza as contagens de eventos em `locais_mais_eventos.rds` e `paises_mais_eventos.rds`, derivadas do histórico `ufc_fights.csv`. O histórico de eventos e a base de confrontos têm coberturas diferentes.
 
 ```{r}
 #| label: carrega-dados
 
 lutas <- readRDS("../dados_limpos/ufc_lutas_completo.rds")
+atletas <- readRDS("../dados_limpos/atletas_limpo.rds")
+rankings <- readRDS("../dados_limpos/rankings_limpo.rds")
+locais <- readRDS("../dados_limpos/locais_mais_eventos.rds")
+paises <- readRDS("../dados_limpos/paises_mais_eventos.rds")
 ```
 
 ## Pré-processamento
@@ -73,9 +81,13 @@ O script `scripts/02_limpeza_ufc.R` padroniza datas e textos, converte pesos de 
 
 As contagens anuais usam as lutas com data registrada. Para os métodos de encerramento, as decisões por unanimidade, divisão e maioria foram agrupadas. A proporção de cada método usa como denominador as lutas com método informado.
 
-A análise dos resultados considera apenas lutas com vencedor identificado como vermelho ou azul. Para cada variável, calcula-se a diferença entre os valores do vencedor e do derrotado. A comparação usa os pares com valores finitos, e os empates na variável são mantidos no denominador. As medidas são descritivas e os atletas podem aparecer em mais de um confronto.
+A comparação entre vencedores e derrotados considera lutas com vencedor identificado como vermelho ou azul. Para cada variável, calcula-se a diferença entre os valores do vencedor e do derrotado. A comparação usa os pares com valores finitos e mantém os empates na variável no denominador.
 
-Os cálculos, as tabelas, o gráfico e os valores inseridos no texto são gerados em R [@rCore] com o pacote `knitr` [@Xie2026] durante a renderização do Quarto. Com os dados tratados do repositório, o HTML pode ser reproduzido a partir da raiz do projeto com `quarto render relatorio/relatorio_ufc.qmd --to html`.
+Nos perfis, valores iguais a zero em altura, envergadura e idade são tratados como ausentes. O resumo por categoria apresenta a média e o número de registros disponíveis para cada medida. Nos rankings divisionais, a permanência é medida pelo número de datas distintas em que cada atleta aparece, e a melhor posição corresponde ao menor valor registrado, com zero representando o campeão. Nas sínteses por gênero, a média da permanência considera cada combinação de atleta e divisão, enquanto os totais de atletas e campeões contam cada atleta uma vez em cada grupo. O retrato mais recente considera a última data disponível na base divisional.
+
+Para as disputas de cinturão, aplica-se a correção de classificação documentada em `R/aba_09_cinturao.R` na versão integrada à `main`. O recorte usa as lutas marcadas como disputa de título com cinco rounds programados, mantém os registros de 11/07/2020 que o módulo identifica como exceção e retira as lutas da lista de exclusão do módulo. A taxa de vitória é calculada entre as disputas com vencedor registrado. Na análise geográfica, cada evento é contado uma vez pela combinação de nome, data e local, e as variações de endereço para a mesma cidade e país são somadas.
+
+Os cálculos, as tabelas, os gráficos e os valores inseridos no texto são gerados em R [@rCore] com o pacote `knitr` [@Xie2026] durante a renderização do Quarto. Com os dados tratados do repositório, o HTML pode ser reproduzido a partir da raiz do projeto com `quarto render relatorio/relatorio_ufc.qmd --to html`.
 
 # Resultados e Discussão {#sec-resultados}
 
@@ -118,7 +130,37 @@ A @tbl-metodos indica que o método mais frequente foi **`r names(frequencias)[1
 
 ### Métodos de encerramento por ano e gênero
 
-[aguardando analise]
+```{r}
+#| label: fig-metodos-ano-genero
+#| fig-cap: "Distribuição percentual dos métodos de encerramento por ano e gênero."
+#| fig-height: 6
+
+genero <- factor(lutas$gender, levels = c("MALE", "FEMALE"),
+                 labels = c("Masculino", "Feminino"))
+contagens <- table(
+  ano = format(lutas$date, "%Y"),
+  metodo = factor(metodo, levels = names(frequencias)),
+  genero = genero
+)
+percentuais <- 100 * prop.table(contagens, margin = c(1, 3))
+percentuais[!is.finite(percentuais)] <- NA_real_
+percentuais_periodo <- 100 * prop.table(apply(contagens, c(2, 3), sum), margin = 2)
+cores <- c("#245775", "#AB4937", "#48754B", "#68676D")
+
+config_grafico <- par(mfrow = c(2, 1), mar = c(4, 4, 2, 1))
+for (grupo in levels(genero)) {
+  matplot(as.integer(dimnames(contagens)$ano), percentuais[, , grupo],
+          type = "o", pch = seq_along(cores), lty = 1, col = cores, ylim = c(0, 100),
+          main = grupo, xlab = "Ano", ylab = "Lutas (%)")
+  if (grupo == "Masculino") {
+    legend("topright", legend = dimnames(contagens)$metodo, col = cores,
+           pch = seq_along(cores), lty = 1, ncol = 2, bty = "n", cex = 0.8)
+  }
+}
+par(config_grafico)
+```
+
+No período observado, as decisões representaram `r formata_pct(percentuais_periodo["Decisão", "Masculino"])` dos desfechos masculinos e `r formata_pct(percentuais_periodo["Decisão", "Feminino"])` dos femininos com método e data informados. A @fig-metodos-ano-genero usa o total de lutas de cada gênero e ano como denominador. Anos com poucos registros podem apresentar grandes oscilações de proporção, e os percentuais do período combinam lutas de anos com coberturas diferentes.
 
 ## Diferenças entre vencedores e derrotados
 
@@ -165,23 +207,187 @@ Na @tbl-vencedores, uma diferença positiva indica que o vencedor tinha o maior 
 
 ## Perfil dos atletas por categoria de peso
 
-[aguardando analise]
+```{r}
+#| label: tbl-perfil-categorias
+#| tbl-cap: "Perfil dos atletas por categoria de peso. n indica o número de medidas disponíveis."
+
+medidas <- c("height_cm", "reach_cm", "age")
+atletas[medidas] <- lapply(atletas[medidas], function(x) replace(x, x %in% 0, NA))
+perfis <- split(atletas, atletas$weight_class)
+perfil <- do.call(rbind, lapply(perfis, function(grupo) {
+  data.frame(
+    Categoria = grupo$weight_class[1],
+    Registros = nrow(grupo),
+    Altura = mean(grupo$height_cm, na.rm = TRUE),
+    N_altura = sum(!is.na(grupo$height_cm)),
+    Envergadura = mean(grupo$reach_cm, na.rm = TRUE),
+    N_envergadura = sum(!is.na(grupo$reach_cm)),
+    Idade = mean(grupo$age, na.rm = TRUE),
+    N_idade = sum(!is.na(grupo$age))
+  )
+}))
+mais_registros <- perfil[which.max(perfil$Registros), ]
+maior_altura <- perfil[which.max(perfil$Altura), ]
+menor_altura <- perfil[which.min(perfil$Altura), ]
+
+knitr::kable(
+  perfil, row.names = FALSE, digits = 1,
+  col.names = c("Categoria", "Registros", "Altura (cm)", "n",
+                "Envergadura (cm)", "n", "Idade (anos)", "n"),
+  format.args = list(decimal.mark = ",")
+)
+```
+
+A categoria *`r mais_registros$Categoria`* teve o maior número de registros (`r mais_registros$Registros`). A altura média variou de `r formatC(menor_altura$Altura, format = "f", digits = 1, decimal.mark = ",")` cm em *`r menor_altura$Categoria`* a `r formatC(maior_altura$Altura, format = "f", digits = 1, decimal.mark = ",")` cm em *`r maior_altura$Categoria`*. Os denominadores da @tbl-perfil-categorias variam entre medidas devido aos valores ausentes. Ao todo, `r nrow(atletas) - sum(perfil$Registros)` registros ficaram fora da tabela por falta de categoria.
 
 ## Permanência dos atletas nos rankings
 
-[aguardando analise]
+```{r}
+#| label: tbl-ranking-permanencia
+#| tbl-cap: "Cinco combinações de atleta e categoria com mais datas no ranking."
+
+divisionais <- as.data.frame(rankings[!grepl("Pound-for-Pound", rankings$weight_class) &
+                                       !is.na(rankings$date) & !is.na(rankings$rank), ])
+por_atleta_categoria <- split(
+  divisionais, list(divisionais$weight_class, divisionais$fighter), drop = TRUE
+)
+permanencia <- do.call(rbind, lapply(por_atleta_categoria, function(grupo) {
+  data.frame(
+    Atleta = grupo$fighter[1],
+    Categoria = grupo$weight_class[1],
+    Datas = length(unique(grupo$date)),
+    Melhor = min(grupo$rank),
+    Datas_campeao = length(unique(grupo$date[grupo$rank == 0]))
+  )
+}))
+permanencia <- permanencia[order(-permanencia$Datas, permanencia$Melhor,
+                                 permanencia$Atleta, permanencia$Categoria), ]
+knitr::kable(
+  head(permanencia, 5), row.names = FALSE,
+  col.names = c("Atleta", "Categoria", "Datas no ranking", "Melhor posição", "Datas como campeão")
+)
+```
+
+Entre `r format(min(divisionais$date), "%d/%m/%Y")` e `r format(max(divisionais$date), "%d/%m/%Y")`, a maior permanência observada foi a de `r permanencia$Atleta[1]` na categoria *`r permanencia$Categoria[1]`*, com `r permanencia$Datas[1]` datas no ranking. A @tbl-ranking-permanencia conta aparições em publicações distintas. Um atleta pode sair e voltar ao ranking durante esse intervalo.
+
+### Histórico e último ranking por gênero
+
+```{r}
+#| label: tbl-ranking-genero
+#| tbl-cap: "Histórico e retrato mais recente dos rankings divisionais por gênero."
+
+data_recente <- max(divisionais$date)
+ranking_recente <- unique(divisionais[divisionais$date == data_recente,
+                                      c("weight_class", "rank")])
+genero_ranking <- ifelse(grepl("^Women", permanencia$Categoria, ignore.case = TRUE),
+                         "Feminino", "Masculino")
+genero_recente <- ifelse(grepl("^Women", ranking_recente$weight_class, ignore.case = TRUE),
+                         "Feminino", "Masculino")
+
+resumo_rankings <- do.call(rbind, lapply(c("Masculino", "Feminino"), function(genero) {
+  historico <- permanencia[genero_ranking == genero, ]
+  data.frame(
+    Genero = genero,
+    Atletas = length(unique(historico$Atleta)),
+    Campeoes = length(unique(historico$Atleta[historico$Melhor == 0])),
+    Media_datas = mean(historico$Datas),
+    Posicoes = sum(genero_recente == genero)
+  )
+}))
+knitr::kable(
+  resumo_rankings, digits = 1, row.names = FALSE,
+  col.names = c("Gênero", "Atletas no histórico", "Campeões no histórico",
+                "Média de datas por atleta e divisão", "Posições no último ranking"),
+  format.args = list(decimal.mark = ",")
+)
+```
+
+O ranking divisional de `r format(data_recente, "%d/%m/%Y")` registrou `r sum(resumo_rankings$Posicoes)` posições. A @tbl-ranking-genero apresenta a cobertura histórica e as posições dessa publicação. Como as divisões têm períodos de cobertura diferentes, as médias de aparições descrevem o histórico observado de cada grupo.
 
 ## Disputas de cinturão
 
-[aguardando analise]
+```{r}
+#| label: tbl-cinturao
+#| tbl-cap: "Atletas com mais disputas de cinturão no recorte corrigido."
+
+exclusoes <- data.frame(
+  date = as.Date(c(rep("2026-01-31", 3), "2025-09-13", "2025-08-16", rep("2023-02-04", 4))),
+  r_fighter = c(
+    "Sangwook Kim", "Keiichiro Nakamura", "Sulangrangbo", "Rodrigo Sezinando",
+    "Alibi Idiris", "Jeka Saragih", "JeongYeong Lee", "Toshiomi Kazama", "SeungGuk Choi"
+  )
+)
+disputas <- lutas[
+  lutas$title_bout %in% TRUE &
+    (lutas$no_of_rounds %in% 5 | lutas$date %in% as.Date("2020-07-11")) &
+    !(paste(lutas$date, lutas$r_fighter) %in% paste(exclusoes$date, exclusoes$r_fighter)), ]
+
+participacoes <- table(c(disputas$r_fighter, disputas$b_fighter))
+nomes <- names(participacoes)
+com_vencedor <- disputas[disputas$winner %in% c("Red", "Blue"), ]
+vencedores_titulo <- ifelse(com_vencedor$winner == "Red", com_vencedor$r_fighter,
+                           com_vencedor$b_fighter)
+disputas_decididas <- table(factor(c(com_vencedor$r_fighter, com_vencedor$b_fighter),
+                                   levels = nomes))
+vitorias_titulo <- table(factor(vencedores_titulo, levels = nomes))
+resumo_titulo <- data.frame(
+  Atleta = nomes,
+  Disputas = as.integer(participacoes),
+  Com_vencedor = as.integer(disputas_decididas),
+  Vitorias = as.integer(vitorias_titulo)
+)
+resumo_titulo$Aproveitamento <- with(resumo_titulo, 100 * Vitorias / Com_vencedor)
+resumo_titulo <- resumo_titulo[order(-resumo_titulo$Disputas, -resumo_titulo$Vitorias,
+                                     resumo_titulo$Atleta), ]
+knitr::kable(
+  head(resumo_titulo, 5), row.names = FALSE, digits = 1,
+  col.names = c("Atleta", "Disputas", "Com vencedor", "Vitórias", "Aproveitamento (%)"),
+  format.args = list(decimal.mark = ",")
+)
+```
+
+Após a correção da classificação, o recorte reuniu `r nrow(disputas)` disputas de cinturão. O total inclui `r nrow(disputas) - nrow(com_vencedor)` sem vencedor identificado. Na @tbl-cinturao, `r resumo_titulo$Atleta[1]` liderou em participações, com `r resumo_titulo$Disputas[1]` disputas e `r resumo_titulo$Vitorias[1]` vitórias. O total de participações descreve a frequência de disputas de cada atleta, enquanto o aproveitamento considera apenas as disputas decididas.
 
 ## Distribuição geográfica dos eventos
 
-[aguardando analise]
+```{r}
+#| label: tbl-paises-eventos
+#| tbl-cap: "Países com mais eventos e a cidade líder em cada um."
+
+cidades <- aggregate(total_eventos ~ cidade + pais, data = locais, FUN = sum)
+cidades <- cidades[order(-cidades$total_eventos, cidades$cidade), ]
+cidades_lideres <- cidades[!duplicated(cidades$pais), ]
+total_eventos <- sum(paises$total_eventos)
+paises <- paises[order(-paises$total_eventos, paises$pais), ]
+top_paises <- paises[paises$total_eventos >= paises$total_eventos[5], ]
+cidades_dos_paises <- cidades_lideres[match(top_paises$pais, cidades_lideres$pais), ]
+rotulos_paises <- c(USA = "Estados Unidos", Brazil = "Brasil", Canada = "Canadá",
+                   "United Kingdom" = "Reino Unido", Australia = "Austrália",
+                   "United Arab Emirates" = "Emirados Árabes Unidos")
+rotulos_top <- unname(rotulos_paises[top_paises$pais])
+tabela_paises <- data.frame(
+  Pais = ifelse(is.na(rotulos_top), top_paises$pais, rotulos_top),
+  Eventos = top_paises$total_eventos,
+  Percentual = 100 * top_paises$total_eventos / total_eventos,
+  Cidade = cidades_dos_paises$cidade,
+  Eventos_cidade = cidades_dos_paises$total_eventos
+)
+knitr::kable(
+  tabela_paises, digits = 1,
+  col.names = c("País", "Eventos", "% do total", "Cidade líder", "Eventos na cidade"),
+  format.args = list(decimal.mark = ",")
+)
+```
+
+O histórico contém `r total_eventos` eventos distribuídos por `r nrow(paises)` países ou territórios. A @tbl-paises-eventos é liderada por `r tabela_paises$Pais[1]`, com `r tabela_paises$Eventos[1]` eventos (`r formata_pct(tabela_paises$Percentual[1])` do total). `r cidades$cidade[1]` foi a cidade com mais eventos no período (`r cidades$total_eventos[1]`).
 
 # Conclusão {#sec-conclusao}
 
-O número de lutas registradas variou ao longo do tempo, e `r tolower(names(frequencias)[1])` foi o desfecho mais frequente entre os registros com informação disponível. A comparação por confronto permitiu quantificar com que frequência os vencedores apresentaram valores maiores em alcance, altura, vitórias no histórico e média de quedas. A cobertura da base, os valores ausentes e a repetição de atletas limitam a interpretação. As associações são descritivas e não estimam o efeito causal desses atributos sobre o resultado.
+O número de lutas registradas variou ao longo do tempo. A `r tolower(names(frequencias)[1])` foi o desfecho mais frequente e teve participação maior entre as lutas femininas no período. Na comparação por confronto, os vencedores tiveram maior alcance em `r formata_pct(resumo_vencedores["alcance", "percentual_maior"])` dos pares, com os empates incluídos no denominador.
+
+As categorias apresentaram perfis físicos distintos, e as datas de publicação dos rankings permitiram identificar os atletas com mais aparições por divisão. O recorte corrigido de cinturão reuniu `r nrow(disputas)` disputas. No histórico de eventos, `r tabela_paises$Pais[1]` concentrou `r formata_pct(tabela_paises$Percentual[1])` das ocorrências.
+
+A cobertura das bases, os valores ausentes e a repetição de atletas limitam a interpretação. As comparações são descritivas e os percentuais agregados podem refletir diferenças na composição dos confrontos por categoria e período.
 
 # Referências Bibliográficas {.unnumbered}
 

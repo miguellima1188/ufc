@@ -2253,7 +2253,10 @@ vertical-align: -.125em;
   <li><a href="#comparação-entre-vencedores-e-derrotados-por-categoria-de-peso" id="toc-comparação-entre-vencedores-e-derrotados-por-categoria-de-peso" class="nav-link" data-scroll-target="#comparação-entre-vencedores-e-derrotados-por-categoria-de-peso"><span class="header-section-number">3.3.1</span> Comparação entre vencedores e derrotados por categoria de peso</a></li>
   </ul></li>
   <li><a href="#perfil-dos-atletas-por-categoria-de-peso" id="toc-perfil-dos-atletas-por-categoria-de-peso" class="nav-link" data-scroll-target="#perfil-dos-atletas-por-categoria-de-peso"><span class="header-section-number">3.4</span> Perfil dos atletas por categoria de peso</a></li>
-  <li><a href="#permanência-dos-atletas-nos-rankings" id="toc-permanência-dos-atletas-nos-rankings" class="nav-link" data-scroll-target="#permanência-dos-atletas-nos-rankings"><span class="header-section-number">3.5</span> Permanência dos atletas nos rankings</a></li>
+  <li><a href="#permanência-dos-atletas-nos-rankings" id="toc-permanência-dos-atletas-nos-rankings" class="nav-link" data-scroll-target="#permanência-dos-atletas-nos-rankings"><span class="header-section-number">3.5</span> Permanência dos atletas nos rankings</a>
+  <ul class="collapse">
+  <li><a href="#histórico-e-último-ranking-por-gênero" id="toc-histórico-e-último-ranking-por-gênero" class="nav-link" data-scroll-target="#histórico-e-último-ranking-por-gênero"><span class="header-section-number">3.5.1</span> Histórico e último ranking por gênero</a></li>
+  </ul></li>
   <li><a href="#disputas-de-cinturão" id="toc-disputas-de-cinturão" class="nav-link" data-scroll-target="#disputas-de-cinturão"><span class="header-section-number">3.6</span> Disputas de cinturão</a></li>
   <li><a href="#distribuição-geográfica-dos-eventos" id="toc-distribuição-geográfica-dos-eventos" class="nav-link" data-scroll-target="#distribuição-geográfica-dos-eventos"><span class="header-section-number">3.7</span> Distribuição geográfica dos eventos</a></li>
   </ul></li>
@@ -2315,7 +2318,7 @@ vertical-align: -.125em;
     <div>
     <div class="quarto-title-meta-heading">Data de Publicação</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">26/11/2026</p>
+      <p class="date">28/11/2026</p>
     </div>
   </div>
   
@@ -2330,18 +2333,22 @@ vertical-align: -.125em;
 <section id="sec-introducao" class="level1" data-number="1">
 <h1 data-number="1"><span class="header-section-number">1</span> Introdução</h1>
 <p>No Ultimate Fighting Championship (UFC), uma luta pode terminar antes do último round ou ser decidida pelos juízes. O histórico de confrontos permite comparar a frequência desses desfechos e investigar como as características dos atletas se associam ao resultado das lutas.</p>
-<p>O objetivo deste relatório é descrever a evolução do número de lutas registradas, resumir os métodos de encerramento e avaliar se vencedores e derrotados diferem em altura, alcance, histórico de vitórias e média de quedas aplicadas.</p>
+<p>O objetivo é descrever a evolução do número de lutas e seus métodos de encerramento e comparar vencedores e derrotados em altura, alcance, histórico de vitórias e média de quedas aplicadas. Para contextualizar os confrontos, o relatório examina o perfil dos atletas por categoria de peso, sua permanência nos rankings, as disputas de cinturão e a distribuição geográfica dos eventos.</p>
 </section>
 <section id="sec-metodos" class="level1" data-number="2">
 <h1 data-number="2"><span class="header-section-number">2</span> Materiais e Métodos</h1>
 <section id="conjunto-de-dados" class="level2" data-number="2.1">
 <h2 data-number="2.1" class="anchored" data-anchor-id="conjunto-de-dados"><span class="header-section-number">2.1</span> Conjunto de dados</h2>
 <p>A coletânea <em>UFC Athletes and Fight Data</em>, publicada pelo TidyTuesday <span class="citation" data-cites="tidytuesdayUfc2026">(<a href="#ref-tidytuesdayUfc2026" role="doc-biblioref">R for Data Science Online Learning Community, 2026</a>)</span>, reúne dados históricos de lutas, eventos, perfis de atletas, rankings e estatísticas de desempenho.</p>
-<p>As análises apresentadas na <a href="#sec-resultados" class="quarto-xref">Seção 3</a> utilizam o arquivo tratado <code>ufc_lutas_completo.rds</code>, derivado da versão de <code>ultimate_ufc_dataset.csv</code> publicada pelo TidyTuesday. Cada linha representa uma luta e reúne a data, a categoria de peso, o método de encerramento, o vencedor e as medidas dos atletas nos cantos vermelho e azul.</p>
+<p>As análises de confrontos da <a href="#sec-resultados" class="quarto-xref">Seção 3</a> utilizam o arquivo tratado <code>ufc_lutas_completo.rds</code>, derivado da versão de <code>ultimate_ufc_dataset.csv</code> publicada pelo TidyTuesday. Cada linha representa uma luta e reúne a data, a categoria de peso, o método de encerramento, o vencedor e as medidas dos atletas nos cantos vermelho e azul. Os perfis de atletas e as posições nos rankings vêm de <code>atletas_limpo.rds</code> e <code>rankings_limpo.rds</code>. A distribuição geográfica utiliza as contagens de eventos em <code>locais_mais_eventos.rds</code> e <code>paises_mais_eventos.rds</code>, derivadas do histórico <code>ufc_fights.csv</code>. O histórico de eventos e a base de confrontos têm coberturas diferentes.</p>
 <div class="cell">
 <details class="code-fold">
 <summary>Ver código</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>lutas <span class="ot">&lt;-</span> <span class="fu">readRDS</span>(<span class="st">&quot;../dados_limpos/ufc_lutas_completo.rds&quot;</span>)</span></code></pre></div><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>lutas <span class="ot">&lt;-</span> <span class="fu">readRDS</span>(<span class="st">&quot;../dados_limpos/ufc_lutas_completo.rds&quot;</span>)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>atletas <span class="ot">&lt;-</span> <span class="fu">readRDS</span>(<span class="st">&quot;../dados_limpos/atletas_limpo.rds&quot;</span>)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>rankings <span class="ot">&lt;-</span> <span class="fu">readRDS</span>(<span class="st">&quot;../dados_limpos/rankings_limpo.rds&quot;</span>)</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>locais <span class="ot">&lt;-</span> <span class="fu">readRDS</span>(<span class="st">&quot;../dados_limpos/locais_mais_eventos.rds&quot;</span>)</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>paises <span class="ot">&lt;-</span> <span class="fu">readRDS</span>(<span class="st">&quot;../dados_limpos/paises_mais_eventos.rds&quot;</span>)</span></code></pre></div><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
 </section>
@@ -2352,8 +2359,10 @@ vertical-align: -.125em;
 <section id="técnicas-estatísticas-e-computacionais" class="level2" data-number="2.3">
 <h2 data-number="2.3" class="anchored" data-anchor-id="técnicas-estatísticas-e-computacionais"><span class="header-section-number">2.3</span> Técnicas estatísticas e computacionais</h2>
 <p>As contagens anuais usam as lutas com data registrada. Para os métodos de encerramento, as decisões por unanimidade, divisão e maioria foram agrupadas. A proporção de cada método usa como denominador as lutas com método informado.</p>
-<p>A análise dos resultados considera apenas lutas com vencedor identificado como vermelho ou azul. Para cada variável, calcula-se a diferença entre os valores do vencedor e do derrotado. A comparação usa os pares com valores finitos, e os empates na variável são mantidos no denominador. As medidas são descritivas e os atletas podem aparecer em mais de um confronto.</p>
-<p>Os cálculos, as tabelas, o gráfico e os valores inseridos no texto são gerados em R <span class="citation" data-cites="rCore">(<a href="#ref-rCore" role="doc-biblioref">R Core Team, 2026</a>)</span> com o pacote <code>knitr</code> <span class="citation" data-cites="Xie2026">(<a href="#ref-Xie2026" role="doc-biblioref">Xie, 2026</a>)</span> durante a renderização do Quarto. Com os dados tratados do repositório, o HTML pode ser reproduzido a partir da raiz do projeto com <code>quarto render relatorio/relatorio_ufc.qmd --to html</code>.</p>
+<p>A comparação entre vencedores e derrotados considera lutas com vencedor identificado como vermelho ou azul. Para cada variável, calcula-se a diferença entre os valores do vencedor e do derrotado. A comparação usa os pares com valores finitos e mantém os empates na variável no denominador.</p>
+<p>Nos perfis, valores iguais a zero em altura, envergadura e idade são tratados como ausentes. O resumo por categoria apresenta a média e o número de registros disponíveis para cada medida. Nos rankings divisionais, a permanência é medida pelo número de datas distintas em que cada atleta aparece, e a melhor posição corresponde ao menor valor registrado, com zero representando o campeão. Nas sínteses por gênero, a média da permanência considera cada combinação de atleta e divisão, enquanto os totais de atletas e campeões contam cada atleta uma vez em cada grupo. O retrato mais recente considera a última data disponível na base divisional.</p>
+<p>Para as disputas de cinturão, aplica-se a correção de classificação documentada em <code>R/aba_09_cinturao.R</code> na versão integrada à <code>main</code>. O recorte usa as lutas marcadas como disputa de título com cinco rounds programados, mantém os registros de 11/07/2020 que o módulo identifica como exceção e retira as lutas da lista de exclusão do módulo. A taxa de vitória é calculada entre as disputas com vencedor registrado. Na análise geográfica, cada evento é contado uma vez pela combinação de nome, data e local, e as variações de endereço para a mesma cidade e país são somadas.</p>
+<p>Os cálculos, as tabelas, os gráficos e os valores inseridos no texto são gerados em R <span class="citation" data-cites="rCore">(<a href="#ref-rCore" role="doc-biblioref">R Core Team, 2026</a>)</span> com o pacote <code>knitr</code> <span class="citation" data-cites="Xie2026">(<a href="#ref-Xie2026" role="doc-biblioref">Xie, 2026</a>)</span> durante a renderização do Quarto. Com os dados tratados do repositório, o HTML pode ser reproduzido a partir da raiz do projeto com <code>quarto render relatorio/relatorio_ufc.qmd --to html</code>.</p>
 </section>
 </section>
 <section id="sec-resultados" class="level1" data-number="3">
@@ -2448,7 +2457,47 @@ Tabela 1: Distribuição dos métodos de encerramento informados.
 <p>A <a href="#tbl-metodos" class="quarto-xref">Tabela 1</a> indica que o método mais frequente foi <strong>Decisão</strong>, com 3432 lutas. Houve 238 registros sem método informado.</p>
 <section id="métodos-de-encerramento-por-ano-e-gênero" class="level3" data-number="3.2.1">
 <h3 data-number="3.2.1" class="anchored" data-anchor-id="métodos-de-encerramento-por-ano-e-gênero"><span class="header-section-number">3.2.1</span> Métodos de encerramento por ano e gênero</h3>
-<p>[aguardando analise]</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Ver código</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>genero <span class="ot">&lt;-</span> <span class="fu">factor</span>(lutas<span class="sc">$</span>gender, <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">&quot;MALE&quot;</span>, <span class="st">&quot;FEMALE&quot;</span>),</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>                 <span class="at">labels =</span> <span class="fu">c</span>(<span class="st">&quot;Masculino&quot;</span>, <span class="st">&quot;Feminino&quot;</span>))</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>contagens <span class="ot">&lt;-</span> <span class="fu">table</span>(</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">ano =</span> <span class="fu">format</span>(lutas<span class="sc">$</span>date, <span class="st">&quot;%Y&quot;</span>),</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">metodo =</span> <span class="fu">factor</span>(metodo, <span class="at">levels =</span> <span class="fu">names</span>(frequencias)),</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">genero =</span> genero</span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>percentuais <span class="ot">&lt;-</span> <span class="dv">100</span> <span class="sc">*</span> <span class="fu">prop.table</span>(contagens, <span class="at">margin =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">3</span>))</span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>percentuais[<span class="sc">!</span><span class="fu">is.finite</span>(percentuais)] <span class="ot">&lt;-</span> <span class="cn">NA_real_</span></span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>percentuais_periodo <span class="ot">&lt;-</span> <span class="dv">100</span> <span class="sc">*</span> <span class="fu">prop.table</span>(<span class="fu">apply</span>(contagens, <span class="fu">c</span>(<span class="dv">2</span>, <span class="dv">3</span>), sum), <span class="at">margin =</span> <span class="dv">2</span>)</span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>cores <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;#245775&quot;</span>, <span class="st">&quot;#AB4937&quot;</span>, <span class="st">&quot;#48754B&quot;</span>, <span class="st">&quot;#68676D&quot;</span>)</span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>config_grafico <span class="ot">&lt;-</span> <span class="fu">par</span>(<span class="at">mfrow =</span> <span class="fu">c</span>(<span class="dv">2</span>, <span class="dv">1</span>), <span class="at">mar =</span> <span class="fu">c</span>(<span class="dv">4</span>, <span class="dv">4</span>, <span class="dv">2</span>, <span class="dv">1</span>))</span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (grupo <span class="cf">in</span> <span class="fu">levels</span>(genero)) {</span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">matplot</span>(<span class="fu">as.integer</span>(<span class="fu">dimnames</span>(contagens)<span class="sc">$</span>ano), percentuais[, , grupo],</span>
+<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a>          <span class="at">type =</span> <span class="st">&quot;o&quot;</span>, <span class="at">pch =</span> <span class="fu">seq_along</span>(cores), <span class="at">lty =</span> <span class="dv">1</span>, <span class="at">col =</span> cores, <span class="at">ylim =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">100</span>),</span>
+<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a>          <span class="at">main =</span> grupo, <span class="at">xlab =</span> <span class="st">&quot;Ano&quot;</span>, <span class="at">ylab =</span> <span class="st">&quot;Lutas (%)&quot;</span>)</span>
+<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (grupo <span class="sc">==</span> <span class="st">&quot;Masculino&quot;</span>) {</span>
+<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a>    <span class="fu">legend</span>(<span class="st">&quot;topright&quot;</span>, <span class="at">legend =</span> <span class="fu">dimnames</span>(contagens)<span class="sc">$</span>metodo, <span class="at">col =</span> cores,</span>
+<span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a>           <span class="at">pch =</span> <span class="fu">seq_along</span>(cores), <span class="at">lty =</span> <span class="dv">1</span>, <span class="at">ncol =</span> <span class="dv">2</span>, <span class="at">bty =</span> <span class="st">&quot;n&quot;</span>, <span class="at">cex =</span> <span class="fl">0.8</span>)</span>
+<span id="cb4-21"><a href="#cb4-21" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb4-22"><a href="#cb4-22" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb4-23"><a href="#cb4-23" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(config_grafico)</span></code></pre></div><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output-display">
+<div id="fig-metodos-ano-genero" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-metodos-ano-genero-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img role="img" src="data:image/png;base64,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" class="img-fluid figure-img" width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-metodos-ano-genero-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figura 2: Distribuição percentual dos métodos de encerramento por ano e gênero.
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>No período observado, as decisões representaram 47,5% dos desfechos masculinos e 63,0% dos femininos com método e data informados. A <a href="#fig-metodos-ano-genero" class="quarto-xref">Figura 2</a> usa o total de lutas de cada gênero e ano como denominador. Anos com poucos registros podem apresentar grandes oscilações de proporção, e os percentuais do período combinam lutas de anos com coberturas diferentes.</p>
 </section>
 </section>
 <section id="diferenças-entre-vencedores-e-derrotados" class="level2" data-number="3.3">
@@ -2456,35 +2505,35 @@ Tabela 1: Distribuição dos métodos de encerramento informados.
 <div class="cell">
 <details class="code-fold">
 <summary>Ver código</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>decididas <span class="ot">&lt;-</span> lutas[lutas<span class="sc">$</span>winner <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">&quot;Red&quot;</span>, <span class="st">&quot;Blue&quot;</span>), ]</span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>sinal <span class="ot">&lt;-</span> <span class="fu">ifelse</span>(decididas<span class="sc">$</span>winner <span class="sc">==</span> <span class="st">&quot;Red&quot;</span>, <span class="dv">1</span>, <span class="sc">-</span><span class="dv">1</span>)</span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>diferencas <span class="ot">&lt;-</span> <span class="fu">list</span>(</span>
-<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">altura =</span> sinal <span class="sc">*</span> (decididas<span class="sc">$</span>r_height_cms <span class="sc">-</span> decididas<span class="sc">$</span>b_height_cms),</span>
-<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">alcance =</span> sinal <span class="sc">*</span> (decididas<span class="sc">$</span>r_reach_cms <span class="sc">-</span> decididas<span class="sc">$</span>b_reach_cms),</span>
-<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">vitorias =</span> sinal <span class="sc">*</span> (decididas<span class="sc">$</span>r_wins <span class="sc">-</span> decididas<span class="sc">$</span>b_wins),</span>
-<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">quedas =</span> sinal <span class="sc">*</span> (decididas<span class="sc">$</span>r_avg_td_landed <span class="sc">-</span> decididas<span class="sc">$</span>b_avg_td_landed)</span>
-<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>resumo_vencedores <span class="ot">&lt;-</span> <span class="fu">do.call</span>(rbind, <span class="fu">lapply</span>(diferencas, <span class="cf">function</span>(diferenca) {</span>
-<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>  valores <span class="ot">&lt;-</span> diferenca[<span class="fu">is.finite</span>(diferenca)]</span>
-<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">data.frame</span>(</span>
-<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">Pares =</span> <span class="fu">length</span>(valores),</span>
-<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>    <span class="at">Mediana =</span> <span class="fu">median</span>(valores),</span>
-<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>    <span class="at">percentual_maior =</span> <span class="dv">100</span> <span class="sc">*</span> <span class="fu">mean</span>(valores <span class="sc">&gt;</span> <span class="dv">0</span>)</span>
-<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a>}))</span>
-<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a>rotulos <span class="ot">&lt;-</span> <span class="fu">c</span>(</span>
-<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a>  <span class="at">altura =</span> <span class="st">&quot;Altura (cm)&quot;</span>,</span>
-<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a>  <span class="at">alcance =</span> <span class="st">&quot;Alcance (cm)&quot;</span>,</span>
-<span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a>  <span class="at">vitorias =</span> <span class="st">&quot;Vit\u00f3rias no hist\u00f3rico&quot;</span>,</span>
-<span id="cb4-21"><a href="#cb4-21" aria-hidden="true" tabindex="-1"></a>  <span class="at">quedas =</span> <span class="st">&quot;M\u00e9dia de quedas aplicadas&quot;</span></span>
-<span id="cb4-22"><a href="#cb4-22" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb4-23"><a href="#cb4-23" aria-hidden="true" tabindex="-1"></a>tabela_vencedores <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
-<span id="cb4-24"><a href="#cb4-24" aria-hidden="true" tabindex="-1"></a>  <span class="at">Variavel =</span> <span class="fu">unname</span>(rotulos[<span class="fu">rownames</span>(resumo_vencedores)]),</span>
-<span id="cb4-25"><a href="#cb4-25" aria-hidden="true" tabindex="-1"></a>  resumo_vencedores</span>
-<span id="cb4-26"><a href="#cb4-26" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb4-27"><a href="#cb4-27" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">kable</span>(tabela_vencedores, <span class="at">row.names =</span> <span class="cn">FALSE</span>, <span class="at">digits =</span> <span class="dv">1</span>,</span>
-<span id="cb4-28"><a href="#cb4-28" aria-hidden="true" tabindex="-1"></a>             <span class="at">col.names =</span> <span class="fu">c</span>(<span class="st">&quot;Vari\u00e1vel&quot;</span>, <span class="st">&quot;Pares&quot;</span>, <span class="st">&quot;Mediana&quot;</span>, <span class="st">&quot;Vencedor com valor maior (%)&quot;</span>),</span>
-<span id="cb4-29"><a href="#cb4-29" aria-hidden="true" tabindex="-1"></a>             <span class="at">format.args =</span> <span class="fu">list</span>(<span class="at">decimal.mark =</span> <span class="st">&quot;,&quot;</span>))</span></code></pre></div><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>decididas <span class="ot">&lt;-</span> lutas[lutas<span class="sc">$</span>winner <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">&quot;Red&quot;</span>, <span class="st">&quot;Blue&quot;</span>), ]</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>sinal <span class="ot">&lt;-</span> <span class="fu">ifelse</span>(decididas<span class="sc">$</span>winner <span class="sc">==</span> <span class="st">&quot;Red&quot;</span>, <span class="dv">1</span>, <span class="sc">-</span><span class="dv">1</span>)</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>diferencas <span class="ot">&lt;-</span> <span class="fu">list</span>(</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">altura =</span> sinal <span class="sc">*</span> (decididas<span class="sc">$</span>r_height_cms <span class="sc">-</span> decididas<span class="sc">$</span>b_height_cms),</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">alcance =</span> sinal <span class="sc">*</span> (decididas<span class="sc">$</span>r_reach_cms <span class="sc">-</span> decididas<span class="sc">$</span>b_reach_cms),</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">vitorias =</span> sinal <span class="sc">*</span> (decididas<span class="sc">$</span>r_wins <span class="sc">-</span> decididas<span class="sc">$</span>b_wins),</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">quedas =</span> sinal <span class="sc">*</span> (decididas<span class="sc">$</span>r_avg_td_landed <span class="sc">-</span> decididas<span class="sc">$</span>b_avg_td_landed)</span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>resumo_vencedores <span class="ot">&lt;-</span> <span class="fu">do.call</span>(rbind, <span class="fu">lapply</span>(diferencas, <span class="cf">function</span>(diferenca) {</span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>  valores <span class="ot">&lt;-</span> diferenca[<span class="fu">is.finite</span>(diferenca)]</span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">data.frame</span>(</span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">Pares =</span> <span class="fu">length</span>(valores),</span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>    <span class="at">Mediana =</span> <span class="fu">median</span>(valores),</span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a>    <span class="at">percentual_maior =</span> <span class="dv">100</span> <span class="sc">*</span> <span class="fu">mean</span>(valores <span class="sc">&gt;</span> <span class="dv">0</span>)</span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a>}))</span>
+<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a>rotulos <span class="ot">&lt;-</span> <span class="fu">c</span>(</span>
+<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a>  <span class="at">altura =</span> <span class="st">&quot;Altura (cm)&quot;</span>,</span>
+<span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a>  <span class="at">alcance =</span> <span class="st">&quot;Alcance (cm)&quot;</span>,</span>
+<span id="cb5-20"><a href="#cb5-20" aria-hidden="true" tabindex="-1"></a>  <span class="at">vitorias =</span> <span class="st">&quot;Vit\u00f3rias no hist\u00f3rico&quot;</span>,</span>
+<span id="cb5-21"><a href="#cb5-21" aria-hidden="true" tabindex="-1"></a>  <span class="at">quedas =</span> <span class="st">&quot;M\u00e9dia de quedas aplicadas&quot;</span></span>
+<span id="cb5-22"><a href="#cb5-22" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb5-23"><a href="#cb5-23" aria-hidden="true" tabindex="-1"></a>tabela_vencedores <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb5-24"><a href="#cb5-24" aria-hidden="true" tabindex="-1"></a>  <span class="at">Variavel =</span> <span class="fu">unname</span>(rotulos[<span class="fu">rownames</span>(resumo_vencedores)]),</span>
+<span id="cb5-25"><a href="#cb5-25" aria-hidden="true" tabindex="-1"></a>  resumo_vencedores</span>
+<span id="cb5-26"><a href="#cb5-26" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb5-27"><a href="#cb5-27" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">kable</span>(tabela_vencedores, <span class="at">row.names =</span> <span class="cn">FALSE</span>, <span class="at">digits =</span> <span class="dv">1</span>,</span>
+<span id="cb5-28"><a href="#cb5-28" aria-hidden="true" tabindex="-1"></a>             <span class="at">col.names =</span> <span class="fu">c</span>(<span class="st">&quot;Vari\u00e1vel&quot;</span>, <span class="st">&quot;Pares&quot;</span>, <span class="st">&quot;Mediana&quot;</span>, <span class="st">&quot;Vencedor com valor maior (%)&quot;</span>),</span>
+<span id="cb5-29"><a href="#cb5-29" aria-hidden="true" tabindex="-1"></a>             <span class="at">format.args =</span> <span class="fu">list</span>(<span class="at">decimal.mark =</span> <span class="st">&quot;,&quot;</span>))</span></code></pre></div><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div id="tbl-vencedores" class="cell quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-tbl figure">
@@ -2548,24 +2597,588 @@ Tabela 2: Diferenças entre vencedores e derrotados em lutas com valores dispon
 </section>
 <section id="perfil-dos-atletas-por-categoria-de-peso" class="level2" data-number="3.4">
 <h2 data-number="3.4" class="anchored" data-anchor-id="perfil-dos-atletas-por-categoria-de-peso"><span class="header-section-number">3.4</span> Perfil dos atletas por categoria de peso</h2>
-<p>[aguardando analise]</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Ver código</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>medidas <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;height_cm&quot;</span>, <span class="st">&quot;reach_cm&quot;</span>, <span class="st">&quot;age&quot;</span>)</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>atletas[medidas] <span class="ot">&lt;-</span> <span class="fu">lapply</span>(atletas[medidas], <span class="cf">function</span>(x) <span class="fu">replace</span>(x, x <span class="sc">%in%</span> <span class="dv">0</span>, <span class="cn">NA</span>))</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>perfis <span class="ot">&lt;-</span> <span class="fu">split</span>(atletas, atletas<span class="sc">$</span>weight_class)</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>perfil <span class="ot">&lt;-</span> <span class="fu">do.call</span>(rbind, <span class="fu">lapply</span>(perfis, <span class="cf">function</span>(grupo) {</span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">data.frame</span>(</span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">Categoria =</span> grupo<span class="sc">$</span>weight_class[<span class="dv">1</span>],</span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">Registros =</span> <span class="fu">nrow</span>(grupo),</span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">Altura =</span> <span class="fu">mean</span>(grupo<span class="sc">$</span>height_cm, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">N_altura =</span> <span class="fu">sum</span>(<span class="sc">!</span><span class="fu">is.na</span>(grupo<span class="sc">$</span>height_cm)),</span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">Envergadura =</span> <span class="fu">mean</span>(grupo<span class="sc">$</span>reach_cm, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">N_envergadura =</span> <span class="fu">sum</span>(<span class="sc">!</span><span class="fu">is.na</span>(grupo<span class="sc">$</span>reach_cm)),</span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">Idade =</span> <span class="fu">mean</span>(grupo<span class="sc">$</span>age, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a>    <span class="at">N_idade =</span> <span class="fu">sum</span>(<span class="sc">!</span><span class="fu">is.na</span>(grupo<span class="sc">$</span>age))</span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a>}))</span>
+<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a>mais_registros <span class="ot">&lt;-</span> perfil[<span class="fu">which.max</span>(perfil<span class="sc">$</span>Registros), ]</span>
+<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a>maior_altura <span class="ot">&lt;-</span> perfil[<span class="fu">which.max</span>(perfil<span class="sc">$</span>Altura), ]</span>
+<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a>menor_altura <span class="ot">&lt;-</span> perfil[<span class="fu">which.min</span>(perfil<span class="sc">$</span>Altura), ]</span>
+<span id="cb6-19"><a href="#cb6-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-20"><a href="#cb6-20" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">kable</span>(</span>
+<span id="cb6-21"><a href="#cb6-21" aria-hidden="true" tabindex="-1"></a>  perfil, <span class="at">row.names =</span> <span class="cn">FALSE</span>, <span class="at">digits =</span> <span class="dv">1</span>,</span>
+<span id="cb6-22"><a href="#cb6-22" aria-hidden="true" tabindex="-1"></a>  <span class="at">col.names =</span> <span class="fu">c</span>(<span class="st">&quot;Categoria&quot;</span>, <span class="st">&quot;Registros&quot;</span>, <span class="st">&quot;Altura (cm)&quot;</span>, <span class="st">&quot;n&quot;</span>,</span>
+<span id="cb6-23"><a href="#cb6-23" aria-hidden="true" tabindex="-1"></a>                <span class="st">&quot;Envergadura (cm)&quot;</span>, <span class="st">&quot;n&quot;</span>, <span class="st">&quot;Idade (anos)&quot;</span>, <span class="st">&quot;n&quot;</span>),</span>
+<span id="cb6-24"><a href="#cb6-24" aria-hidden="true" tabindex="-1"></a>  <span class="at">format.args =</span> <span class="fu">list</span>(<span class="at">decimal.mark =</span> <span class="st">&quot;,&quot;</span>)</span>
+<span id="cb6-25"><a href="#cb6-25" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div id="tbl-perfil-categorias" class="cell quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-perfil-categorias-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Tabela 3: Perfil dos atletas por categoria de peso. n indica o número de medidas disponíveis.
+</figcaption>
+<div aria-describedby="tbl-perfil-categorias-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="cell-output-display">
+<table class="cell caption-top table table-sm table-striped small">
+<colgroup>
+<col style="width: 25%">
+<col style="width: 11%">
+<col style="width: 13%">
+<col style="width: 4%">
+<col style="width: 19%">
+<col style="width: 4%">
+<col style="width: 15%">
+<col style="width: 4%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Categoria</th>
+<th style="text-align: right;">Registros</th>
+<th style="text-align: right;">Altura (cm)</th>
+<th style="text-align: right;">n</th>
+<th style="text-align: right;">Envergadura (cm)</th>
+<th style="text-align: right;">n</th>
+<th style="text-align: right;">Idade (anos)</th>
+<th style="text-align: right;">n</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Bantamweight</td>
+<td style="text-align: right;">311</td>
+<td style="text-align: right;">171,0</td>
+<td style="text-align: right;">279</td>
+<td style="text-align: right;">175,4</td>
+<td style="text-align: right;">245</td>
+<td style="text-align: right;">33,2</td>
+<td style="text-align: right;">299</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Featherweight</td>
+<td style="text-align: right;">318</td>
+<td style="text-align: right;">174,7</td>
+<td style="text-align: right;">285</td>
+<td style="text-align: right;">179,5</td>
+<td style="text-align: right;">237</td>
+<td style="text-align: right;">33,2</td>
+<td style="text-align: right;">307</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Flyweight</td>
+<td style="text-align: right;">186</td>
+<td style="text-align: right;">167,7</td>
+<td style="text-align: right;">155</td>
+<td style="text-align: right;">171,3</td>
+<td style="text-align: right;">139</td>
+<td style="text-align: right;">32,3</td>
+<td style="text-align: right;">176</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Heavyweight</td>
+<td style="text-align: right;">318</td>
+<td style="text-align: right;">189,8</td>
+<td style="text-align: right;">245</td>
+<td style="text-align: right;">196,4</td>
+<td style="text-align: right;">145</td>
+<td style="text-align: right;">40,1</td>
+<td style="text-align: right;">273</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Light Heavyweight</td>
+<td style="text-align: right;">246</td>
+<td style="text-align: right;">187,3</td>
+<td style="text-align: right;">222</td>
+<td style="text-align: right;">193,1</td>
+<td style="text-align: right;">145</td>
+<td style="text-align: right;">38,2</td>
+<td style="text-align: right;">231</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Lightweight</td>
+<td style="text-align: right;">495</td>
+<td style="text-align: right;">177,2</td>
+<td style="text-align: right;">422</td>
+<td style="text-align: right;">182,5</td>
+<td style="text-align: right;">298</td>
+<td style="text-align: right;">36,2</td>
+<td style="text-align: right;">444</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Middleweight</td>
+<td style="text-align: right;">411</td>
+<td style="text-align: right;">184,6</td>
+<td style="text-align: right;">356</td>
+<td style="text-align: right;">191,2</td>
+<td style="text-align: right;">240</td>
+<td style="text-align: right;">38,1</td>
+<td style="text-align: right;">384</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Welterweight</td>
+<td style="text-align: right;">482</td>
+<td style="text-align: right;">181,1</td>
+<td style="text-align: right;">447</td>
+<td style="text-align: right;">186,8</td>
+<td style="text-align: right;">301</td>
+<td style="text-align: right;">37,2</td>
+<td style="text-align: right;">454</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Women’s Bantamweight</td>
+<td style="text-align: right;">82</td>
+<td style="text-align: right;">169,6</td>
+<td style="text-align: right;">77</td>
+<td style="text-align: right;">171,3</td>
+<td style="text-align: right;">70</td>
+<td style="text-align: right;">34,6</td>
+<td style="text-align: right;">78</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Women’s Featherweight</td>
+<td style="text-align: right;">8</td>
+<td style="text-align: right;">173,4</td>
+<td style="text-align: right;">7</td>
+<td style="text-align: right;">176,7</td>
+<td style="text-align: right;">7</td>
+<td style="text-align: right;">36,1</td>
+<td style="text-align: right;">8</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Women’s Flyweight</td>
+<td style="text-align: right;">92</td>
+<td style="text-align: right;">166,7</td>
+<td style="text-align: right;">83</td>
+<td style="text-align: right;">168,7</td>
+<td style="text-align: right;">81</td>
+<td style="text-align: right;">32,5</td>
+<td style="text-align: right;">92</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Women’s Strawweight</td>
+<td style="text-align: right;">123</td>
+<td style="text-align: right;">161,1</td>
+<td style="text-align: right;">107</td>
+<td style="text-align: right;">162,4</td>
+<td style="text-align: right;">106</td>
+<td style="text-align: right;">32,8</td>
+<td style="text-align: right;">120</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</figure>
+</div>
+</div>
+<p>A categoria <em>Lightweight</em> teve o maior número de registros (495). A altura média variou de 161,1 cm em <em>Women’s Strawweight</em> a 189,8 cm em <em>Heavyweight</em>. Os denominadores da <a href="#tbl-perfil-categorias" class="quarto-xref">Tabela 3</a> variam entre medidas devido aos valores ausentes. Ao todo, 73 registros ficaram fora da tabela por falta de categoria.</p>
 </section>
 <section id="permanência-dos-atletas-nos-rankings" class="level2" data-number="3.5">
 <h2 data-number="3.5" class="anchored" data-anchor-id="permanência-dos-atletas-nos-rankings"><span class="header-section-number">3.5</span> Permanência dos atletas nos rankings</h2>
-<p>[aguardando analise]</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Ver código</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>divisionais <span class="ot">&lt;-</span> <span class="fu">as.data.frame</span>(rankings[<span class="sc">!</span><span class="fu">grepl</span>(<span class="st">&quot;Pound-for-Pound&quot;</span>, rankings<span class="sc">$</span>weight_class) <span class="sc">&amp;</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>                                       <span class="sc">!</span><span class="fu">is.na</span>(rankings<span class="sc">$</span>date) <span class="sc">&amp;</span> <span class="sc">!</span><span class="fu">is.na</span>(rankings<span class="sc">$</span>rank), ])</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>por_atleta_categoria <span class="ot">&lt;-</span> <span class="fu">split</span>(</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>  divisionais, <span class="fu">list</span>(divisionais<span class="sc">$</span>weight_class, divisionais<span class="sc">$</span>fighter), <span class="at">drop =</span> <span class="cn">TRUE</span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>permanencia <span class="ot">&lt;-</span> <span class="fu">do.call</span>(rbind, <span class="fu">lapply</span>(por_atleta_categoria, <span class="cf">function</span>(grupo) {</span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">data.frame</span>(</span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">Atleta =</span> grupo<span class="sc">$</span>fighter[<span class="dv">1</span>],</span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">Categoria =</span> grupo<span class="sc">$</span>weight_class[<span class="dv">1</span>],</span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">Datas =</span> <span class="fu">length</span>(<span class="fu">unique</span>(grupo<span class="sc">$</span>date)),</span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">Melhor =</span> <span class="fu">min</span>(grupo<span class="sc">$</span>rank),</span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">Datas_campeao =</span> <span class="fu">length</span>(<span class="fu">unique</span>(grupo<span class="sc">$</span>date[grupo<span class="sc">$</span>rank <span class="sc">==</span> <span class="dv">0</span>]))</span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a>}))</span>
+<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a>permanencia <span class="ot">&lt;-</span> permanencia[<span class="fu">order</span>(<span class="sc">-</span>permanencia<span class="sc">$</span>Datas, permanencia<span class="sc">$</span>Melhor,</span>
+<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a>                                 permanencia<span class="sc">$</span>Atleta, permanencia<span class="sc">$</span>Categoria), ]</span>
+<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">kable</span>(</span>
+<span id="cb7-18"><a href="#cb7-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">head</span>(permanencia, <span class="dv">5</span>), <span class="at">row.names =</span> <span class="cn">FALSE</span>,</span>
+<span id="cb7-19"><a href="#cb7-19" aria-hidden="true" tabindex="-1"></a>  <span class="at">col.names =</span> <span class="fu">c</span>(<span class="st">&quot;Atleta&quot;</span>, <span class="st">&quot;Categoria&quot;</span>, <span class="st">&quot;Datas no ranking&quot;</span>, <span class="st">&quot;Melhor posição&quot;</span>, <span class="st">&quot;Datas como campeão&quot;</span>)</span>
+<span id="cb7-20"><a href="#cb7-20" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div id="tbl-ranking-permanencia" class="cell quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-ranking-permanencia-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Tabela 4: Cinco combinações de atleta e categoria com mais datas no ranking.
+</figcaption>
+<div aria-describedby="tbl-ranking-permanencia-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="cell-output-display">
+<table class="cell caption-top table table-sm table-striped small">
+<colgroup>
+<col style="width: 20%">
+<col style="width: 23%">
+<col style="width: 18%">
+<col style="width: 16%">
+<col style="width: 21%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Atleta</th>
+<th style="text-align: left;">Categoria</th>
+<th style="text-align: right;">Datas no ranking</th>
+<th style="text-align: right;">Melhor posição</th>
+<th style="text-align: right;">Datas como campeão</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Julianna Pena</td>
+<td style="text-align: left;">Women’s Bantamweight</td>
+<td style="text-align: right;">478</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">54</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Tim Elliott</td>
+<td style="text-align: left;">Flyweight</td>
+<td style="text-align: right;">477</td>
+<td style="text-align: right;">5</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Raquel Pennington</td>
+<td style="text-align: left;">Women’s Bantamweight</td>
+<td style="text-align: right;">468</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">30</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Stipe Miocic</td>
+<td style="text-align: left;">Heavyweight</td>
+<td style="text-align: right;">456</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">143</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Dominick Cruz</td>
+<td style="text-align: left;">Bantamweight</td>
+<td style="text-align: right;">451</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">67</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</figure>
+</div>
+</div>
+<p>Entre 04/02/2013 e 16/06/2026, a maior permanência observada foi a de Julianna Pena na categoria <em>Women’s Bantamweight</em>, com 478 datas no ranking. A <a href="#tbl-ranking-permanencia" class="quarto-xref">Tabela 4</a> conta aparições em publicações distintas. Um atleta pode sair e voltar ao ranking durante esse intervalo.</p>
+<section id="histórico-e-último-ranking-por-gênero" class="level3" data-number="3.5.1">
+<h3 data-number="3.5.1" class="anchored" data-anchor-id="histórico-e-último-ranking-por-gênero"><span class="header-section-number">3.5.1</span> Histórico e último ranking por gênero</h3>
+<div class="cell">
+<details class="code-fold">
+<summary>Ver código</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>data_recente <span class="ot">&lt;-</span> <span class="fu">max</span>(divisionais<span class="sc">$</span>date)</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>ranking_recente <span class="ot">&lt;-</span> <span class="fu">unique</span>(divisionais[divisionais<span class="sc">$</span>date <span class="sc">==</span> data_recente,</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>                                      <span class="fu">c</span>(<span class="st">&quot;weight_class&quot;</span>, <span class="st">&quot;rank&quot;</span>)])</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>genero_ranking <span class="ot">&lt;-</span> <span class="fu">ifelse</span>(<span class="fu">grepl</span>(<span class="st">&quot;^Women&quot;</span>, permanencia<span class="sc">$</span>Categoria, <span class="at">ignore.case =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>                         <span class="st">&quot;Feminino&quot;</span>, <span class="st">&quot;Masculino&quot;</span>)</span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>genero_recente <span class="ot">&lt;-</span> <span class="fu">ifelse</span>(<span class="fu">grepl</span>(<span class="st">&quot;^Women&quot;</span>, ranking_recente<span class="sc">$</span>weight_class, <span class="at">ignore.case =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>                         <span class="st">&quot;Feminino&quot;</span>, <span class="st">&quot;Masculino&quot;</span>)</span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>resumo_rankings <span class="ot">&lt;-</span> <span class="fu">do.call</span>(rbind, <span class="fu">lapply</span>(<span class="fu">c</span>(<span class="st">&quot;Masculino&quot;</span>, <span class="st">&quot;Feminino&quot;</span>), <span class="cf">function</span>(genero) {</span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>  historico <span class="ot">&lt;-</span> permanencia[genero_ranking <span class="sc">==</span> genero, ]</span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">data.frame</span>(</span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">Genero =</span> genero,</span>
+<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a>    <span class="at">Atletas =</span> <span class="fu">length</span>(<span class="fu">unique</span>(historico<span class="sc">$</span>Atleta)),</span>
+<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a>    <span class="at">Campeoes =</span> <span class="fu">length</span>(<span class="fu">unique</span>(historico<span class="sc">$</span>Atleta[historico<span class="sc">$</span>Melhor <span class="sc">==</span> <span class="dv">0</span>])),</span>
+<span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a>    <span class="at">Media_datas =</span> <span class="fu">mean</span>(historico<span class="sc">$</span>Datas),</span>
+<span id="cb8-16"><a href="#cb8-16" aria-hidden="true" tabindex="-1"></a>    <span class="at">Posicoes =</span> <span class="fu">sum</span>(genero_recente <span class="sc">==</span> genero)</span>
+<span id="cb8-17"><a href="#cb8-17" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb8-18"><a href="#cb8-18" aria-hidden="true" tabindex="-1"></a>}))</span>
+<span id="cb8-19"><a href="#cb8-19" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">kable</span>(</span>
+<span id="cb8-20"><a href="#cb8-20" aria-hidden="true" tabindex="-1"></a>  resumo_rankings, <span class="at">digits =</span> <span class="dv">1</span>, <span class="at">row.names =</span> <span class="cn">FALSE</span>,</span>
+<span id="cb8-21"><a href="#cb8-21" aria-hidden="true" tabindex="-1"></a>  <span class="at">col.names =</span> <span class="fu">c</span>(<span class="st">&quot;Gênero&quot;</span>, <span class="st">&quot;Atletas no histórico&quot;</span>, <span class="st">&quot;Campeões no histórico&quot;</span>,</span>
+<span id="cb8-22"><a href="#cb8-22" aria-hidden="true" tabindex="-1"></a>                <span class="st">&quot;Média de datas por atleta e divisão&quot;</span>, <span class="st">&quot;Posições no último ranking&quot;</span>),</span>
+<span id="cb8-23"><a href="#cb8-23" aria-hidden="true" tabindex="-1"></a>  <span class="at">format.args =</span> <span class="fu">list</span>(<span class="at">decimal.mark =</span> <span class="st">&quot;,&quot;</span>)</span>
+<span id="cb8-24"><a href="#cb8-24" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div id="tbl-ranking-genero" class="cell quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-ranking-genero-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Tabela 5: Histórico e retrato mais recente dos rankings divisionais por gênero.
+</figcaption>
+<div aria-describedby="tbl-ranking-genero-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="cell-output-display">
+<table class="cell caption-top table table-sm table-striped small">
+<colgroup>
+<col style="width: 8%">
+<col style="width: 18%">
+<col style="width: 18%">
+<col style="width: 31%">
+<col style="width: 23%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Gênero</th>
+<th style="text-align: right;">Atletas no histórico</th>
+<th style="text-align: right;">Campeões no histórico</th>
+<th style="text-align: right;">Média de datas por atleta e divisão</th>
+<th style="text-align: right;">Posições no último ranking</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Masculino</td>
+<td style="text-align: right;">485</td>
+<td style="text-align: right;">58</td>
+<td style="text-align: right;">122,8</td>
+<td style="text-align: right;">128</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Feminino</td>
+<td style="text-align: right;">140</td>
+<td style="text-align: right;">18</td>
+<td style="text-align: right;">129,5</td>
+<td style="text-align: right;">46</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</figure>
+</div>
+</div>
+<p>O ranking divisional de 16/06/2026 registrou 174 posições. A <a href="#tbl-ranking-genero" class="quarto-xref">Tabela 5</a> apresenta a cobertura histórica e as posições dessa publicação. Como as divisões têm períodos de cobertura diferentes, as médias de aparições descrevem o histórico observado de cada grupo.</p>
+</section>
 </section>
 <section id="disputas-de-cinturão" class="level2" data-number="3.6">
 <h2 data-number="3.6" class="anchored" data-anchor-id="disputas-de-cinturão"><span class="header-section-number">3.6</span> Disputas de cinturão</h2>
-<p>[aguardando analise]</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Ver código</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>exclusoes <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">date =</span> <span class="fu">as.Date</span>(<span class="fu">c</span>(<span class="fu">rep</span>(<span class="st">&quot;2026-01-31&quot;</span>, <span class="dv">3</span>), <span class="st">&quot;2025-09-13&quot;</span>, <span class="st">&quot;2025-08-16&quot;</span>, <span class="fu">rep</span>(<span class="st">&quot;2023-02-04&quot;</span>, <span class="dv">4</span>))),</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">r_fighter =</span> <span class="fu">c</span>(</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;Sangwook Kim&quot;</span>, <span class="st">&quot;Keiichiro Nakamura&quot;</span>, <span class="st">&quot;Sulangrangbo&quot;</span>, <span class="st">&quot;Rodrigo Sezinando&quot;</span>,</span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;Alibi Idiris&quot;</span>, <span class="st">&quot;Jeka Saragih&quot;</span>, <span class="st">&quot;JeongYeong Lee&quot;</span>, <span class="st">&quot;Toshiomi Kazama&quot;</span>, <span class="st">&quot;SeungGuk Choi&quot;</span></span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>disputas <span class="ot">&lt;-</span> lutas[</span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>  lutas<span class="sc">$</span>title_bout <span class="sc">%in%</span> <span class="cn">TRUE</span> <span class="sc">&amp;</span></span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>    (lutas<span class="sc">$</span>no_of_rounds <span class="sc">%in%</span> <span class="dv">5</span> <span class="sc">|</span> lutas<span class="sc">$</span>date <span class="sc">%in%</span> <span class="fu">as.Date</span>(<span class="st">&quot;2020-07-11&quot;</span>)) <span class="sc">&amp;</span></span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a>    <span class="sc">!</span>(<span class="fu">paste</span>(lutas<span class="sc">$</span>date, lutas<span class="sc">$</span>r_fighter) <span class="sc">%in%</span> <span class="fu">paste</span>(exclusoes<span class="sc">$</span>date, exclusoes<span class="sc">$</span>r_fighter)), ]</span>
+<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a>participacoes <span class="ot">&lt;-</span> <span class="fu">table</span>(<span class="fu">c</span>(disputas<span class="sc">$</span>r_fighter, disputas<span class="sc">$</span>b_fighter))</span>
+<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a>nomes <span class="ot">&lt;-</span> <span class="fu">names</span>(participacoes)</span>
+<span id="cb9-15"><a href="#cb9-15" aria-hidden="true" tabindex="-1"></a>com_vencedor <span class="ot">&lt;-</span> disputas[disputas<span class="sc">$</span>winner <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">&quot;Red&quot;</span>, <span class="st">&quot;Blue&quot;</span>), ]</span>
+<span id="cb9-16"><a href="#cb9-16" aria-hidden="true" tabindex="-1"></a>vencedores_titulo <span class="ot">&lt;-</span> <span class="fu">ifelse</span>(com_vencedor<span class="sc">$</span>winner <span class="sc">==</span> <span class="st">&quot;Red&quot;</span>, com_vencedor<span class="sc">$</span>r_fighter,</span>
+<span id="cb9-17"><a href="#cb9-17" aria-hidden="true" tabindex="-1"></a>                           com_vencedor<span class="sc">$</span>b_fighter)</span>
+<span id="cb9-18"><a href="#cb9-18" aria-hidden="true" tabindex="-1"></a>disputas_decididas <span class="ot">&lt;-</span> <span class="fu">table</span>(<span class="fu">factor</span>(<span class="fu">c</span>(com_vencedor<span class="sc">$</span>r_fighter, com_vencedor<span class="sc">$</span>b_fighter),</span>
+<span id="cb9-19"><a href="#cb9-19" aria-hidden="true" tabindex="-1"></a>                                   <span class="at">levels =</span> nomes))</span>
+<span id="cb9-20"><a href="#cb9-20" aria-hidden="true" tabindex="-1"></a>vitorias_titulo <span class="ot">&lt;-</span> <span class="fu">table</span>(<span class="fu">factor</span>(vencedores_titulo, <span class="at">levels =</span> nomes))</span>
+<span id="cb9-21"><a href="#cb9-21" aria-hidden="true" tabindex="-1"></a>resumo_titulo <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb9-22"><a href="#cb9-22" aria-hidden="true" tabindex="-1"></a>  <span class="at">Atleta =</span> nomes,</span>
+<span id="cb9-23"><a href="#cb9-23" aria-hidden="true" tabindex="-1"></a>  <span class="at">Disputas =</span> <span class="fu">as.integer</span>(participacoes),</span>
+<span id="cb9-24"><a href="#cb9-24" aria-hidden="true" tabindex="-1"></a>  <span class="at">Com_vencedor =</span> <span class="fu">as.integer</span>(disputas_decididas),</span>
+<span id="cb9-25"><a href="#cb9-25" aria-hidden="true" tabindex="-1"></a>  <span class="at">Vitorias =</span> <span class="fu">as.integer</span>(vitorias_titulo)</span>
+<span id="cb9-26"><a href="#cb9-26" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb9-27"><a href="#cb9-27" aria-hidden="true" tabindex="-1"></a>resumo_titulo<span class="sc">$</span>Aproveitamento <span class="ot">&lt;-</span> <span class="fu">with</span>(resumo_titulo, <span class="dv">100</span> <span class="sc">*</span> Vitorias <span class="sc">/</span> Com_vencedor)</span>
+<span id="cb9-28"><a href="#cb9-28" aria-hidden="true" tabindex="-1"></a>resumo_titulo <span class="ot">&lt;-</span> resumo_titulo[<span class="fu">order</span>(<span class="sc">-</span>resumo_titulo<span class="sc">$</span>Disputas, <span class="sc">-</span>resumo_titulo<span class="sc">$</span>Vitorias,</span>
+<span id="cb9-29"><a href="#cb9-29" aria-hidden="true" tabindex="-1"></a>                                     resumo_titulo<span class="sc">$</span>Atleta), ]</span>
+<span id="cb9-30"><a href="#cb9-30" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">kable</span>(</span>
+<span id="cb9-31"><a href="#cb9-31" aria-hidden="true" tabindex="-1"></a>  <span class="fu">head</span>(resumo_titulo, <span class="dv">5</span>), <span class="at">row.names =</span> <span class="cn">FALSE</span>, <span class="at">digits =</span> <span class="dv">1</span>,</span>
+<span id="cb9-32"><a href="#cb9-32" aria-hidden="true" tabindex="-1"></a>  <span class="at">col.names =</span> <span class="fu">c</span>(<span class="st">&quot;Atleta&quot;</span>, <span class="st">&quot;Disputas&quot;</span>, <span class="st">&quot;Com vencedor&quot;</span>, <span class="st">&quot;Vitórias&quot;</span>, <span class="st">&quot;Aproveitamento (%)&quot;</span>),</span>
+<span id="cb9-33"><a href="#cb9-33" aria-hidden="true" tabindex="-1"></a>  <span class="at">format.args =</span> <span class="fu">list</span>(<span class="at">decimal.mark =</span> <span class="st">&quot;,&quot;</span>)</span>
+<span id="cb9-34"><a href="#cb9-34" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div id="tbl-cinturao" class="cell quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-cinturao-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Tabela 6: Atletas com mais disputas de cinturão no recorte corrigido.
+</figcaption>
+<div aria-describedby="tbl-cinturao-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="cell-output-display">
+<table class="cell caption-top table table-sm table-striped small">
+<colgroup>
+<col style="width: 29%">
+<col style="width: 12%">
+<col style="width: 18%">
+<col style="width: 12%">
+<col style="width: 26%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Atleta</th>
+<th style="text-align: right;">Disputas</th>
+<th style="text-align: right;">Com vencedor</th>
+<th style="text-align: right;">Vitórias</th>
+<th style="text-align: right;">Aproveitamento (%)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Jon Jones</td>
+<td style="text-align: right;">16</td>
+<td style="text-align: right;">16</td>
+<td style="text-align: right;">16</td>
+<td style="text-align: right;">100,0</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Demetrious Johnson</td>
+<td style="text-align: right;">14</td>
+<td style="text-align: right;">14</td>
+<td style="text-align: right;">12</td>
+<td style="text-align: right;">85,7</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Amanda Nunes</td>
+<td style="text-align: right;">12</td>
+<td style="text-align: right;">12</td>
+<td style="text-align: right;">11</td>
+<td style="text-align: right;">91,7</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Valentina Shevchenko</td>
+<td style="text-align: right;">12</td>
+<td style="text-align: right;">12</td>
+<td style="text-align: right;">10</td>
+<td style="text-align: right;">83,3</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Israel Adesanya</td>
+<td style="text-align: right;">12</td>
+<td style="text-align: right;">12</td>
+<td style="text-align: right;">8</td>
+<td style="text-align: right;">66,7</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</figure>
+</div>
+</div>
+<p>Após a correção da classificação, o recorte reuniu 282 disputas de cinturão. O total inclui 1 sem vencedor identificado. Na <a href="#tbl-cinturao" class="quarto-xref">Tabela 6</a>, Jon Jones liderou em participações, com 16 disputas e 16 vitórias. O total de participações descreve a frequência de disputas de cada atleta, enquanto o aproveitamento considera apenas as disputas decididas.</p>
 </section>
 <section id="distribuição-geográfica-dos-eventos" class="level2" data-number="3.7">
 <h2 data-number="3.7" class="anchored" data-anchor-id="distribuição-geográfica-dos-eventos"><span class="header-section-number">3.7</span> Distribuição geográfica dos eventos</h2>
-<p>[aguardando analise]</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Ver código</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>cidades <span class="ot">&lt;-</span> <span class="fu">aggregate</span>(total_eventos <span class="sc">~</span> cidade <span class="sc">+</span> pais, <span class="at">data =</span> locais, <span class="at">FUN =</span> sum)</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>cidades <span class="ot">&lt;-</span> cidades[<span class="fu">order</span>(<span class="sc">-</span>cidades<span class="sc">$</span>total_eventos, cidades<span class="sc">$</span>cidade), ]</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>cidades_lideres <span class="ot">&lt;-</span> cidades[<span class="sc">!</span><span class="fu">duplicated</span>(cidades<span class="sc">$</span>pais), ]</span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>total_eventos <span class="ot">&lt;-</span> <span class="fu">sum</span>(paises<span class="sc">$</span>total_eventos)</span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>paises <span class="ot">&lt;-</span> paises[<span class="fu">order</span>(<span class="sc">-</span>paises<span class="sc">$</span>total_eventos, paises<span class="sc">$</span>pais), ]</span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>top_paises <span class="ot">&lt;-</span> paises[paises<span class="sc">$</span>total_eventos <span class="sc">&gt;=</span> paises<span class="sc">$</span>total_eventos[<span class="dv">5</span>], ]</span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>cidades_dos_paises <span class="ot">&lt;-</span> cidades_lideres[<span class="fu">match</span>(top_paises<span class="sc">$</span>pais, cidades_lideres<span class="sc">$</span>pais), ]</span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>rotulos_paises <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="at">USA =</span> <span class="st">&quot;Estados Unidos&quot;</span>, <span class="at">Brazil =</span> <span class="st">&quot;Brasil&quot;</span>, <span class="at">Canada =</span> <span class="st">&quot;Canadá&quot;</span>,</span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a>                   <span class="st">&quot;United Kingdom&quot;</span> <span class="ot">=</span> <span class="st">&quot;Reino Unido&quot;</span>, <span class="at">Australia =</span> <span class="st">&quot;Austrália&quot;</span>,</span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a>                   <span class="st">&quot;United Arab Emirates&quot;</span> <span class="ot">=</span> <span class="st">&quot;Emirados Árabes Unidos&quot;</span>)</span>
+<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a>rotulos_top <span class="ot">&lt;-</span> <span class="fu">unname</span>(rotulos_paises[top_paises<span class="sc">$</span>pais])</span>
+<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a>tabela_paises <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a>  <span class="at">Pais =</span> <span class="fu">ifelse</span>(<span class="fu">is.na</span>(rotulos_top), top_paises<span class="sc">$</span>pais, rotulos_top),</span>
+<span id="cb10-14"><a href="#cb10-14" aria-hidden="true" tabindex="-1"></a>  <span class="at">Eventos =</span> top_paises<span class="sc">$</span>total_eventos,</span>
+<span id="cb10-15"><a href="#cb10-15" aria-hidden="true" tabindex="-1"></a>  <span class="at">Percentual =</span> <span class="dv">100</span> <span class="sc">*</span> top_paises<span class="sc">$</span>total_eventos <span class="sc">/</span> total_eventos,</span>
+<span id="cb10-16"><a href="#cb10-16" aria-hidden="true" tabindex="-1"></a>  <span class="at">Cidade =</span> cidades_dos_paises<span class="sc">$</span>cidade,</span>
+<span id="cb10-17"><a href="#cb10-17" aria-hidden="true" tabindex="-1"></a>  <span class="at">Eventos_cidade =</span> cidades_dos_paises<span class="sc">$</span>total_eventos</span>
+<span id="cb10-18"><a href="#cb10-18" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb10-19"><a href="#cb10-19" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">kable</span>(</span>
+<span id="cb10-20"><a href="#cb10-20" aria-hidden="true" tabindex="-1"></a>  tabela_paises, <span class="at">digits =</span> <span class="dv">1</span>,</span>
+<span id="cb10-21"><a href="#cb10-21" aria-hidden="true" tabindex="-1"></a>  <span class="at">col.names =</span> <span class="fu">c</span>(<span class="st">&quot;País&quot;</span>, <span class="st">&quot;Eventos&quot;</span>, <span class="st">&quot;% do total&quot;</span>, <span class="st">&quot;Cidade líder&quot;</span>, <span class="st">&quot;Eventos na cidade&quot;</span>),</span>
+<span id="cb10-22"><a href="#cb10-22" aria-hidden="true" tabindex="-1"></a>  <span class="at">format.args =</span> <span class="fu">list</span>(<span class="at">decimal.mark =</span> <span class="st">&quot;,&quot;</span>)</span>
+<span id="cb10-23"><a href="#cb10-23" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div id="tbl-paises-eventos" class="cell quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-paises-eventos-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Tabela 7: Países com mais eventos e a cidade líder em cada um.
+</figcaption>
+<div aria-describedby="tbl-paises-eventos-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="cell-output-display">
+<table class="cell caption-top table table-sm table-striped small">
+<colgroup>
+<col style="width: 30%">
+<col style="width: 10%">
+<col style="width: 14%">
+<col style="width: 20%">
+<col style="width: 24%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">País</th>
+<th style="text-align: right;">Eventos</th>
+<th style="text-align: right;">% do total</th>
+<th style="text-align: left;">Cidade líder</th>
+<th style="text-align: right;">Eventos na cidade</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Estados Unidos</td>
+<td style="text-align: right;">546</td>
+<td style="text-align: right;">70,3</td>
+<td style="text-align: left;">Las Vegas</td>
+<td style="text-align: right;">271</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Brasil</td>
+<td style="text-align: right;">41</td>
+<td style="text-align: right;">5,3</td>
+<td style="text-align: left;">Rio de Janeiro</td>
+<td style="text-align: right;">13</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Canadá</td>
+<td style="text-align: right;">37</td>
+<td style="text-align: right;">4,8</td>
+<td style="text-align: left;">Montreal</td>
+<td style="text-align: right;">8</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Reino Unido</td>
+<td style="text-align: right;">31</td>
+<td style="text-align: right;">4,0</td>
+<td style="text-align: left;">London</td>
+<td style="text-align: right;">17</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Austrália</td>
+<td style="text-align: right;">22</td>
+<td style="text-align: right;">2,8</td>
+<td style="text-align: left;">Sydney</td>
+<td style="text-align: right;">8</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Emirados Árabes Unidos</td>
+<td style="text-align: right;">22</td>
+<td style="text-align: right;">2,8</td>
+<td style="text-align: left;">Abu Dhabi</td>
+<td style="text-align: right;">22</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</figure>
+</div>
+</div>
+<p>O histórico contém 777 eventos distribuídos por 30 países ou territórios. A <a href="#tbl-paises-eventos" class="quarto-xref">Tabela 7</a> é liderada por Estados Unidos, com 546 eventos (70,3% do total). Las Vegas foi a cidade com mais eventos no período (271).</p>
 </section>
 </section>
 <section id="sec-conclusao" class="level1" data-number="4">
 <h1 data-number="4"><span class="header-section-number">4</span> Conclusão</h1>
-<p>O número de lutas registradas variou ao longo do tempo, e decisão foi o desfecho mais frequente entre os registros com informação disponível. A comparação por confronto permitiu quantificar com que frequência os vencedores apresentaram valores maiores em alcance, altura, vitórias no histórico e média de quedas. A cobertura da base, os valores ausentes e a repetição de atletas limitam a interpretação. As associações são descritivas e não estimam o efeito causal desses atributos sobre o resultado.</p>
+<p>O número de lutas registradas variou ao longo do tempo. A decisão foi o desfecho mais frequente e teve participação maior entre as lutas femininas no período. Na comparação por confronto, os vencedores tiveram maior alcance em 45,4% dos pares, com os empates incluídos no denominador.</p>
+<p>As categorias apresentaram perfis físicos distintos, e as datas de publicação dos rankings permitiram identificar os atletas com mais aparições por divisão. O recorte corrigido de cinturão reuniu 282 disputas. No histórico de eventos, Estados Unidos concentrou 70,3% das ocorrências.</p>
+<p>A cobertura das bases, os valores ausentes e a repetição de atletas limitam a interpretação. As comparações são descritivas e os percentuais agregados podem refletir diferenças na composição dos confrontos por categoria e período.</p>
 </section>
 <section id="referências-bibliográficas" class="level1 unnumbered">
 <h1 class="unnumbered">Referências Bibliográficas</h1>
